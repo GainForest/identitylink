@@ -5,7 +5,7 @@
  *
  * Usage: node scripts/generate-jwk.js
  *
- * Copy the output and add it to your .env file as ATPROTO_JWK_PRIVATE
+ * Copy the output and add it to your .env.local file as ATPROTO_JWK_PRIVATE
  */
 
 const crypto = require('crypto')
@@ -30,7 +30,7 @@ async function generateJWK() {
   jwk.use = 'sig'
 
   console.log('\n=== ES256 Private Key (JWK) ===\n')
-  console.log('Add this to your .env file as ATPROTO_JWK_PRIVATE:\n')
+  console.log('Add this to your .env.local file as ATPROTO_JWK_PRIVATE:\n')
   console.log(JSON.stringify(jwk))
   console.log('\n')
 }
