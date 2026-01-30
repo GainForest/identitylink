@@ -1,6 +1,7 @@
 import { NodeOAuthClient } from '@atproto/oauth-client-node'
 import { JoseKey } from '@atproto/jwk-jose'
 import { env } from '../env'
+import { getRawSession } from '../session'
 
 const oauthClientKey = 'globalOAuthClient'
 // In development, clear cached client on hot reload to pick up config changes
@@ -54,21 +55,60 @@ const stateStore = {
   },
 }
 
-// Session store - in-memory only (OAuth sessions are too large for cookies)
-// For production, use a proper session store (Redis, database, etc.)
+// Session store - syncs with cookie for persistence across server restarts
 const sessionStore = {
   async get(key: string) {
-    const value = sharedStore.get(`session:${key}`)
-    console.log(`[SessionStore] GET session:${key} ->`, value ? 'found' : 'not found')
-    return value
+    // First check in-memory
+    const memValue = sharedStore.get(`session:${key}`)
+    if (memValue) {
+      console.log(`[SessionStore] GET session:${key} -> found in memory`)
+      return memValue
+    }
+
+    // Try to restore from cookie
+    try {
+      const session = await getRawSession()
+      if (session.oauthSession && session.did === key) {
+        const parsed = JSON.parse(session.oauthSession)
+        sharedStore.set(`session:${key}`, parsed)
+        console.log(`[SessionStore] GET session:${key} -> restored from cookie`)
+        return parsed
+      }
+    } catch (err) {
+      console.warn('[SessionStore] Failed to restore OAuth session from cookie:', err)
+    }
+
+    console.log(`[SessionStore] GET session:${key} -> not found`)
+    return undefined
   },
   async set(key: string, value: unknown) {
     sharedStore.set(`session:${key}`, value)
-    console.log(`[SessionStore] SET session:${key}`)
+    console.log(`[SessionStore] SET session:${key} -> saved to memory`)
+
+    // Also save to cookie for persistence
+    try {
+      const session = await getRawSession()
+      session.oauthSession = JSON.stringify(value)
+      await session.save()
+      console.log(`[SessionStore] SET session:${key} -> saved to cookie`)
+    } catch (err) {
+      // 431 errors can happen if the session is too large
+      // Log but don't fail - memory store still works
+      console.warn('[SessionStore] Failed to save OAuth session to cookie (may be too large):', err)
+    }
   },
   async del(key: string) {
     sharedStore.delete(`session:${key}`)
     console.log(`[SessionStore] DEL session:${key}`)
+
+    // Also clear from cookie
+    try {
+      const session = await getRawSession()
+      session.oauthSession = undefined
+      await session.save()
+    } catch (err) {
+      console.warn('[SessionStore] Failed to clear OAuth session from cookie:', err)
+    }
   },
 }
 
