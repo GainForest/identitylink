@@ -24,7 +24,7 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
   const [showTechnical, setShowTechnical] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
 
-  // Check if this wallet is already linked
+  // Check if this wallet+chain is already linked
   useEffect(() => {
     if (!session?.did || !address) {
       setIsChecking(false)
@@ -36,8 +36,11 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
         const res = await fetch(`/api/verify/${encodeURIComponent(session.did)}`)
         if (res.ok) {
           const data = await res.json()
+          // Check for exact address+chain combination
           const existingWallet = data.attestations?.find(
-            (a: { address: string }) => a.address.toLowerCase() === address.toLowerCase()
+            (a: { address: string; chainId: number }) => 
+              a.address.toLowerCase() === address.toLowerCase() && 
+              a.chainId === chainId
           )
           if (existingWallet) {
             setStatus('already-linked')
@@ -51,7 +54,7 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
     }
 
     checkExisting()
-  }, [session?.did, address])
+  }, [session?.did, address, chainId])
 
   const handleSign = async () => {
     if (!session?.did || !address) return

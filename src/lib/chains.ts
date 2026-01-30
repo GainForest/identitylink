@@ -8,6 +8,8 @@ export const SUPPORTED_CHAINS = [base, optimism, mainnet, arbitrum] as const
 
 export type SupportedChainId = typeof SUPPORTED_CHAINS[number]['id']
 
+export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = [mainnet.id, base.id, optimism.id, arbitrum.id]
+
 export const CHAIN_NAMES: Record<SupportedChainId, string> = {
   [base.id]: 'Base',
   [optimism.id]: 'Optimism',
