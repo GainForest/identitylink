@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
-import { getChainName, getExplorerUrl, SUPPORTED_CHAIN_IDS, CHAIN_COLORS, type SupportedChainId } from '@/lib/chains'
+import { getChainName, getExplorerUrl, SUPPORTED_CHAIN_IDS, CHAIN_COLORS, sortByChainId, type SupportedChainId } from '@/lib/chains'
+import { ChainIcon } from '@/components/ChainIcons'
 import type { SignatureType } from '@/lib/attestation'
 
 interface VerifiedAttestation {
@@ -102,7 +103,7 @@ export default function ManagePage() {
   const verifiedCount = attestations.filter(a => a.verified).length
   const totalCount = attestations.length
 
-  // Group attestations by address
+  // Group attestations by address, sorted with Ethereum first
   const walletGroups: WalletGroup[] = attestations.reduce((groups, attestation) => {
     const existing = groups.find(g => g.address.toLowerCase() === attestation.address.toLowerCase())
     if (existing) {
@@ -117,6 +118,11 @@ export default function ManagePage() {
     }
     return groups
   }, [] as WalletGroup[])
+  
+  // Sort attestations within each group (Ethereum first)
+  walletGroups.forEach(group => {
+    group.attestations = sortByChainId(group.attestations)
+  })
 
   if (authLoading) {
     return (
@@ -301,6 +307,7 @@ function WalletGroupCard({
 }) {
   const [expanded, setExpanded] = useState(false)
   const allValid = group.attestations.every(a => a.verified)
+  // Unlinked chains already in correct order since SUPPORTED_CHAIN_IDS has Ethereum first
   const unlinkedChains = SUPPORTED_CHAIN_IDS.filter(id => !group.linkedChainIds.includes(id))
 
   return (
@@ -359,13 +366,14 @@ function WalletGroupCard({
                 <button
                   key={attestation.rkey}
                   onClick={() => setExpanded(!expanded)}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium transition-colors hover:opacity-80"
+                  className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[11px] font-medium transition-colors hover:opacity-80"
                   style={{ 
                     backgroundColor: `${CHAIN_COLORS[attestation.chainId as SupportedChainId]}15`,
                     color: CHAIN_COLORS[attestation.chainId as SupportedChainId],
                   }}
                   title={`Linked on ${getChainName(attestation.chainId)}`}
                 >
+                  <ChainIcon chainId={attestation.chainId} className="w-3 h-3" />
                   {attestation.verified ? (
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -384,10 +392,11 @@ function WalletGroupCard({
                 <Link
                   key={chainId}
                   href="/link"
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium 
+                  className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[11px] font-medium 
                            bg-zinc-100 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 transition-colors"
                   title={`Add ${getChainName(chainId)}`}
                 >
+                  <ChainIcon chainId={chainId} className="w-3 h-3" />
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
@@ -422,10 +431,9 @@ function WalletGroupCard({
               className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/50"
             >
               <div className="flex items-center gap-3">
-                <span 
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: CHAIN_COLORS[attestation.chainId as SupportedChainId] }}
-                />
+                <span style={{ color: CHAIN_COLORS[attestation.chainId as SupportedChainId] }}>
+                  <ChainIcon chainId={attestation.chainId} className="w-4 h-4" />
+                </span>
                 <div>
                   <p className="text-sm font-medium text-zinc-700">
                     {getChainName(attestation.chainId)}

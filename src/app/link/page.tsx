@@ -4,7 +4,8 @@ import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import { useAccount, useDisconnect } from 'wagmi'
 import { useAuth } from '@/lib/auth'
-import { getChainName, getExplorerUrl } from '@/lib/chains'
+import { getChainName, getExplorerUrl, sortByChainId, CHAIN_COLORS, type SupportedChainId } from '@/lib/chains'
+import { ChainIcon } from '@/components/ChainIcons'
 import { AtprotoAuthStep } from '@/components/steps/AtprotoAuthStep'
 import { WalletConnectStep } from '@/components/steps/WalletConnectStep'
 import { ReviewStep } from '@/components/steps/ReviewStep'
@@ -99,6 +100,7 @@ export default function LinkPage() {
 
   // Success state - clean minimal design
   if (currentStep === 'success') {
+    const sortedWallets = sortByChainId(linkedWallets)
     const latestWallet = linkedWallets[linkedWallets.length - 1]
     const verifyUrl = typeof window !== 'undefined'
       ? `${window.location.origin}/verify/${session?.handle || session?.did}`
@@ -128,14 +130,20 @@ export default function LinkPage() {
 
           {/* Linked wallets list */}
           <div className="space-y-3 mb-8">
-            {linkedWallets.map((wallet, i) => (
+            {sortedWallets.map((wallet) => (
               <div 
                 key={wallet.uri}
                 className="flex items-center gap-3 py-3 px-4 -mx-4 rounded-lg bg-emerald-50/50"
               >
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-sm font-medium">
-                  {i + 1}
-                </div>
+                <span 
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ 
+                    backgroundColor: `${CHAIN_COLORS[wallet.chainId as SupportedChainId]}15`,
+                    color: CHAIN_COLORS[wallet.chainId as SupportedChainId],
+                  }}
+                >
+                  <ChainIcon chainId={wallet.chainId} className="w-4 h-4" />
+                </span>
                 <div className="flex-1 min-w-0">
                   <p className="font-mono text-sm text-zinc-800 truncate">
                     {wallet.address}

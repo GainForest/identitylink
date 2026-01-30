@@ -42,3 +42,30 @@ export function getExplorerUrl(chainId: number, address: string): string {
   const baseUrl = explorers[chainId as SupportedChainId] || 'https://etherscan.io'
   return `${baseUrl}/address/${address}`
 }
+
+/**
+ * Sort chain IDs with Ethereum (mainnet) always first, then by SUPPORTED_CHAIN_IDS order.
+ */
+export function sortChainIds(chainIds: number[]): number[] {
+  return [...chainIds].sort((a, b) => {
+    const indexA = SUPPORTED_CHAIN_IDS.indexOf(a as SupportedChainId)
+    const indexB = SUPPORTED_CHAIN_IDS.indexOf(b as SupportedChainId)
+    // Unknown chains go to the end
+    const orderA = indexA === -1 ? 999 : indexA
+    const orderB = indexB === -1 ? 999 : indexB
+    return orderA - orderB
+  })
+}
+
+/**
+ * Sort items by chainId with Ethereum first.
+ */
+export function sortByChainId<T extends { chainId: number }>(items: T[]): T[] {
+  return [...items].sort((a, b) => {
+    const indexA = SUPPORTED_CHAIN_IDS.indexOf(a.chainId as SupportedChainId)
+    const indexB = SUPPORTED_CHAIN_IDS.indexOf(b.chainId as SupportedChainId)
+    const orderA = indexA === -1 ? 999 : indexA
+    const orderB = indexB === -1 ? 999 : indexB
+    return orderA - orderB
+  })
+}
