@@ -30,8 +30,8 @@ type AmountUSD = 1 | 5 | 10
 const AMOUNTS: AmountUSD[] = [1, 5, 10]
 const CHAINS = [mainnet, base, optimism, arbitrum]
 
-// Recipient address for tips
-const TIP_RECIPIENT = '0x9aCef55E7D6141D99261f0D25073C64350e0ff02' as Address
+// Recipient address for tips (lowercase to avoid checksum issues)
+const TIP_RECIPIENT = '0x9acef55e7d6141d99261f0d25073c64350e0ff02' as Address
 
 interface TipModalProps {
   isOpen: boolean
