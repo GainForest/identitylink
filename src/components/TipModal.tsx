@@ -380,25 +380,18 @@ export function TipModal({ isOpen, onClose, recipientName }: TipModalProps) {
         {txStatus !== 'success' && (
           <div className="px-6 pb-6">
             {!isConnected ? (
-              <div className="space-y-3">
-                <p className="text-center text-xs text-zinc-400">
-                  Connect wallet to send a tip
-                </p>
-                <div className="flex gap-2">
-                  {connectors.slice(0, 3).map((connector) => (
-                    <button
-                      key={connector.uid}
-                      onClick={() => connect({ connector })}
-                      disabled={isConnectPending}
-                      className="flex-1 py-2.5 px-3 bg-zinc-100 hover:bg-zinc-200 
-                                 rounded-xl text-xs font-medium text-zinc-700 
-                                 transition-all disabled:opacity-50"
-                    >
-                      {connector.name === 'Injected' ? 'Browser' : connector.name.split(' ')[0]}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <button
+                onClick={() => {
+                  const injected = connectors.find(c => c.id === 'injected')
+                  if (injected) connect({ connector: injected })
+                }}
+                disabled={isConnectPending}
+                className="w-full py-3 rounded-xl font-medium text-sm transition-all
+                           bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]
+                           disabled:opacity-50"
+              >
+                {isConnectPending ? 'Connecting...' : 'Connect Wallet'}
+              </button>
             ) : (
               <button
                 onClick={handleSend}
