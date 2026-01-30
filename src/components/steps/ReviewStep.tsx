@@ -105,62 +105,90 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
 
   if (status === 'already-linked') {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-            <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900">
-              Already Linked
-            </h2>
-            <p className="text-sm text-zinc-400">
-              This wallet is already connected to your identity
-            </p>
-          </div>
+      <div>
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900">
+            Already Linked
+          </h2>
+          <p className="text-sm text-zinc-400 mt-1">
+            This wallet is already connected on {getChainName(chainId)}
+          </p>
         </div>
 
-        <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
+        {/* Wallet card */}
+        <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100 mb-6">
           <div className="flex items-center gap-3">
-            <span className="text-xl">👛</span>
+            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+              <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
             <div className="flex-1 min-w-0">
               <p className="font-mono text-sm text-zinc-800 truncate">
                 {address}
               </p>
-              <p className="text-xs text-zinc-500">
-                {getChainName(chainId)}
+              <p className="text-xs text-emerald-600 font-medium">
+                Verified on {getChainName(chainId)}
               </p>
             </div>
             <a
               href={getExplorerUrl(chainId, address || '')}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded hover:bg-amber-100 transition-colors"
+              className="p-2 rounded hover:bg-emerald-100 transition-colors"
               title="View on explorer"
             >
-              <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <svg className="w-4 h-4 text-zinc-400 hover:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
               </svg>
             </a>
           </div>
         </div>
 
-        <div className="flex gap-3">
+        {/* Actions - sungai style */}
+        <div className="space-y-1">
           <button
             onClick={onBack}
-            className="flex-1 py-3 px-4 bg-zinc-100 text-zinc-700 font-medium rounded-xl
-                       hover:bg-zinc-200 transition-colors"
+            className="group flex items-center gap-3 w-full py-3 px-4 -mx-4 rounded-lg hover:bg-zinc-50 transition-colors"
           >
-            Connect Different Wallet
+            <div className="w-8 h-8 rounded-full bg-zinc-100 group-hover:bg-zinc-200 flex items-center justify-center transition-colors">
+              <svg className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-zinc-700 group-hover:text-zinc-900 transition-colors">
+              Connect a different wallet
+            </span>
           </button>
+
           <Link
             href={`/verify/${session?.handle || session?.did}`}
-            className="flex-1 py-3 px-4 bg-emerald-600 text-white font-medium rounded-xl
-                       hover:bg-emerald-700 transition-colors text-center"
+            className="group flex items-center gap-3 w-full py-3 px-4 -mx-4 rounded-lg hover:bg-zinc-50 transition-colors"
           >
-            View Verification
+            <div className="w-8 h-8 rounded-full bg-zinc-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
+              <svg className="w-4 h-4 text-zinc-400 group-hover:text-emerald-600 transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-zinc-700 group-hover:text-emerald-700 transition-colors">
+              View verification page
+            </span>
+          </Link>
+
+          <Link
+            href="/manage"
+            className="group flex items-center gap-3 w-full py-3 px-4 -mx-4 rounded-lg hover:bg-zinc-50 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-zinc-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
+              <svg className="w-4 h-4 text-zinc-400 group-hover:text-emerald-600 transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.204-.107-.397.165-.71.505-.78.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-zinc-700 group-hover:text-emerald-700 transition-colors">
+              Manage linked wallets
+            </span>
           </Link>
         </div>
       </div>
@@ -174,123 +202,87 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
   if (status === 'storing') {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4" />
-        <h3 className="text-lg font-medium text-zinc-800 mb-2">Storing Attestation</h3>
-        <p className="text-sm text-zinc-500">Saving to your ATProto repository...</p>
+        <div className="w-8 h-8 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4" />
+        <p className="text-sm text-zinc-500">Storing attestation...</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 mb-2">
-          Review Your Link
-        </h1>
-        <p className="text-zinc-500">
-          You&apos;re about to create a verifiable link between these identities.
+    <div>
+      {/* Header */}
+      <div className="mb-6">
+        <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900">
+          Review & Sign
+        </h2>
+        <p className="text-sm text-zinc-400 mt-1">
+          Create a verifiable link between these identities
         </p>
       </div>
 
       {/* Link visualization */}
-      <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
+      <div className="space-y-2 mb-6">
         {/* ATProto identity */}
-        <div className="bg-white rounded-xl p-4 mb-3">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🦋</span>
-            <div>
-              <p className="text-sm text-zinc-500">ATProto Identity</p>
-              <p className="font-medium text-zinc-800">@{session?.handle}</p>
-              <p className="text-xs text-zinc-400 font-mono mt-0.5">
-                {session?.did.slice(0, 30)}...
-              </p>
-            </div>
+        <div className="flex items-center gap-3 py-3 px-4 bg-zinc-50 rounded-lg border border-zinc-200">
+          <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+            <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-zinc-800 truncate">@{session?.handle}</p>
+            <p className="text-xs text-zinc-400 font-mono truncate">{session?.did}</p>
           </div>
         </div>
 
-        {/* Link arrow */}
-        <div className="flex justify-center py-2">
-          <div className="w-10 h-10 rounded-full bg-white border-2 border-emerald-200 flex items-center justify-center">
-            <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-            </svg>
-          </div>
+        {/* Arrow */}
+        <div className="flex justify-center py-1">
+          <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+          </svg>
         </div>
 
         {/* Wallet */}
-        <div className="bg-white rounded-xl p-4">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">👛</span>
-            <div>
-              <p className="text-sm text-zinc-500">Ethereum Wallet</p>
-              <p className="font-mono text-sm text-zinc-800">
-                {address?.slice(0, 10)}...{address?.slice(-8)}
-              </p>
-              <p className="text-xs text-zinc-400 mt-0.5">
-                on {getChainName(chainId)}
-              </p>
-            </div>
+        <div className="flex items-center gap-3 py-3 px-4 bg-zinc-50 rounded-lg border border-zinc-200">
+          <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center">
+            <svg className="w-4 h-4 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-mono text-sm text-zinc-800">
+              {address?.slice(0, 6)}...{address?.slice(-4)}
+            </p>
+            <p className="text-xs text-zinc-400">{getChainName(chainId)}</p>
           </div>
         </div>
       </div>
 
       {/* Security notice */}
-      <div className="flex gap-3 p-4 bg-green-50 rounded-xl border border-green-100">
-        <span className="text-xl">🛡️</span>
-        <div>
-          <p className="font-medium text-green-800">Safe to sign</p>
-          <p className="text-sm text-green-700 mt-0.5">
-            This signature only proves ownership. It cannot access your funds or make transactions.
-          </p>
-        </div>
-      </div>
-
-      {/* Technical details toggle */}
-      <button
-        onClick={() => setShowTechnical(!showTechnical)}
-        className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
-      >
-        <svg
-          className={`w-4 h-4 transition-transform ${showTechnical ? 'rotate-90' : ''}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      <div className="flex items-start gap-2 py-2 px-3 bg-emerald-50 rounded-lg border border-emerald-100 mb-6">
+        <svg className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
         </svg>
-        View technical details
-      </button>
-
-      {showTechnical && (
-        <div className="p-4 bg-zinc-50 rounded-xl font-mono text-xs text-zinc-600 overflow-x-auto">
-          <pre>{JSON.stringify({
-            domain: {
-              name: 'ATProto EVM Attestation',
-              version: '1',
-            },
-            message: {
-              did: session?.did,
-              evmAddress: address,
-              chainId: chainId,
-              timestamp: Math.floor(Date.now() / 1000),
-              nonce: 1,
-            },
-          }, null, 2)}</pre>
-        </div>
-      )}
+        <p className="text-xs text-emerald-700">
+          This signature only proves ownership. It cannot access your funds or make transactions.
+        </p>
+      </div>
 
       {/* Error display */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
-          <p className="font-medium text-red-800">Error</p>
-          <p className="text-sm text-red-600 mt-1">{error}</p>
-          <button
-            onClick={() => { setStatus('idle'); setError(null) }}
-            className="text-sm text-red-700 underline mt-2"
-          >
-            Try again
-          </button>
+        <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-100 rounded-lg mb-6">
+          <svg className="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          <div>
+            <p className="text-sm text-red-700">{error}</p>
+            <button
+              onClick={() => { setStatus('idle'); setError(null) }}
+              className="text-xs text-red-600 hover:text-red-800 underline mt-1"
+            >
+              Try again
+            </button>
+          </div>
         </div>
       )}
 
@@ -299,8 +291,7 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
         <button
           onClick={onBack}
           disabled={isPending}
-          className="flex-1 py-3 px-4 bg-zinc-100 text-zinc-700 font-medium rounded-xl
-                     hover:bg-zinc-200 transition-colors
+          className="py-2.5 px-4 text-sm text-zinc-600 hover:text-zinc-800 transition-colors
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Back
@@ -308,12 +299,40 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
         <button
           onClick={handleSign}
           disabled={isPending || status !== 'idle'}
-          className="flex-1 py-3 px-4 bg-emerald-600 text-white font-medium rounded-xl
-                     hover:bg-emerald-700 transition-colors
+          className="flex-1 py-2.5 px-4 bg-zinc-900 text-white text-sm font-medium rounded-lg
+                     hover:bg-zinc-800 transition-colors
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {walletType === 'smart-wallet' ? '🔐 Sign with Biometrics' : '✍️ Sign Message'}
+          {walletType === 'smart-wallet' ? 'Sign with Biometrics' : 'Sign & Link'}
         </button>
+      </div>
+
+      {/* Technical details */}
+      <div className="mt-6 pt-6 border-t border-zinc-100">
+        <button
+          onClick={() => setShowTechnical(!showTechnical)}
+          className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
+        >
+          <svg
+            className={`w-3 h-3 transition-transform ${showTechnical ? 'rotate-90' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Technical details
+        </button>
+
+        {showTechnical && (
+          <div className="mt-3 p-3 bg-zinc-50 rounded-lg font-mono text-[10px] text-zinc-500 overflow-x-auto">
+            <pre>{JSON.stringify({
+              domain: { name: 'ATProto EVM Attestation', version: '1' },
+              message: { did: session?.did, evmAddress: address, chainId },
+            }, null, 2)}</pre>
+          </div>
+        )}
       </div>
     </div>
   )

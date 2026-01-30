@@ -20,99 +20,105 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
   const { address, isConnected, chain, connector } = useAccount()
   const { disconnect } = useDisconnect()
 
+  // Connected state
   if (isConnected && address) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 mb-2">
+      <div>
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900">
             Wallet Connected
-          </h1>
-          <p className="text-zinc-500">
-            Great! Your wallet is ready to be linked.
+          </h2>
+          <p className="text-sm text-zinc-400 mt-1">
+            Ready to link to your ATProto identity
           </p>
         </div>
 
-        {/* Connected wallet card */}
-        <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-zinc-500">Connected Wallet</span>
-            <button
-              onClick={() => disconnect()}
-              className="text-sm text-red-500 hover:text-red-700 transition-colors"
-            >
-              Disconnect
-            </button>
+        {/* Linked identities preview */}
+        <div className="space-y-2 mb-6">
+          {/* ATProto identity */}
+          <div className="flex items-center gap-3 py-3 px-4 bg-emerald-50/50 rounded-lg border border-emerald-100">
+            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+              <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-zinc-800 truncate">
+                @{session?.handle || session?.did}
+              </p>
+              <p className="text-xs text-zinc-400">ATProto Identity</p>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white border border-zinc-200 flex items-center justify-center">
-              <svg className="w-5 h-5 text-zinc-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+
+          {/* Arrow */}
+          <div className="flex justify-center py-1">
+            <svg className="w-4 h-4 text-zinc-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+            </svg>
+          </div>
+
+          {/* Wallet */}
+          <div className="flex items-center gap-3 py-3 px-4 bg-zinc-50 rounded-lg border border-zinc-200">
+            <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center">
+              <svg className="w-4 h-4 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
               </svg>
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               <p className="font-mono text-sm text-zinc-800">
                 {address.slice(0, 6)}...{address.slice(-4)}
               </p>
-              <p className="text-xs text-zinc-500">
-                {chain ? getChainName(chain.id) : 'Unknown Chain'}
-                {connector && ` • ${connector.name}`}
+              <p className="text-xs text-zinc-400">
+                {chain ? getChainName(chain.id) : 'Unknown'}{connector && ` · ${connector.name}`}
               </p>
             </div>
+            <button
+              onClick={() => disconnect()}
+              className="text-xs text-zinc-400 hover:text-red-500 transition-colors"
+            >
+              Change
+            </button>
           </div>
         </div>
 
-        {/* ATProto identity reminder */}
-        <div className="p-4 bg-zinc-50 rounded-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-              <span className="text-lg">🦋</span>
-            </div>
-            <div>
-              <p className="font-medium text-zinc-800">
-                @{session?.handle || session?.did}
-              </p>
-              <p className="text-xs text-zinc-500">ATProto Identity</p>
-            </div>
-          </div>
-        </div>
-
+        {/* Continue button */}
         <button
           onClick={onContinue}
-          className="w-full py-3 px-4 bg-emerald-600 text-white font-medium rounded-xl
-                     hover:bg-emerald-700 transition-colors"
+          className="w-full py-2.5 px-4 bg-zinc-900 text-white text-sm font-medium rounded-lg
+                     hover:bg-zinc-800 transition-colors"
         >
-          Continue to Review
+          Continue to Sign
         </button>
       </div>
     )
   }
 
+  // Not connected state
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 mb-2">
-          Connect Your Wallet
-        </h1>
-        <p className="text-zinc-500">
-          Choose the wallet you want to link to your ATProto identity.
+    <div>
+      {/* Header */}
+      <div className="mb-6">
+        <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900">
+          Connect Wallet
+        </h2>
+        <p className="text-sm text-zinc-400 mt-1">
+          Choose a wallet to link to your identity
         </p>
       </div>
 
-      {/* ATProto identity reminder */}
-      <div className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
-        <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+      {/* Signed in indicator */}
+      <div className="flex items-center gap-2 py-2 px-3 bg-emerald-50 rounded-lg border border-emerald-100 mb-6">
+        <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
-        <div>
-          <span className="text-sm text-green-800">Signed in as </span>
-          <span className="text-sm font-medium text-green-900">
-            @{session?.handle || session?.did}
-          </span>
-        </div>
+        <span className="text-xs text-emerald-700">
+          Signed in as <span className="font-medium">@{session?.handle || session?.did}</span>
+        </span>
       </div>
 
       {/* Wallet options */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 mb-4">
         <WalletButton
           connectorId="injected"
           name="MetaMask"
@@ -141,19 +147,18 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
       </div>
       
       {/* Rabby note */}
-      <p className="text-xs text-zinc-400 text-center">
-        Using Rabby? Click MetaMask - it works with all browser wallets.
+      <p className="text-xs text-zinc-400 text-center mb-6">
+        Using Rabby? Click MetaMask - works with all browser wallets.
       </p>
 
       {/* Security note */}
-      <div className="flex gap-3 p-4 bg-zinc-50 rounded-xl text-sm">
-        <svg className="w-5 h-5 text-zinc-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-        <div className="text-zinc-600">
-          <p className="font-medium">Read-only access</p>
-          <p className="text-zinc-500 mt-0.5">
-            We only request permission to view your address and request signatures. We cannot move your funds.
+      <div className="pt-6 border-t border-zinc-100">
+        <div className="flex gap-3 text-xs">
+          <svg className="w-4 h-4 text-zinc-300 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          <p className="text-zinc-400">
+            Read-only access. We can only view your address and request signatures. We cannot move your funds.
           </p>
         </div>
       </div>
