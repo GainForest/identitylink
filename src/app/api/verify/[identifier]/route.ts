@@ -7,6 +7,18 @@ import type { StoredAttestation, SignatureType } from '@/lib/attestation'
 
 export const dynamic = 'force-dynamic'
 
+// CORS headers for cross-origin requests
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+// Handle preflight requests
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 // Create public clients for each supported chain
 const clients = {
   [base.id]: createPublicClient({ chain: base, transport: http() }),
@@ -54,7 +66,7 @@ export async function GET(
       handle = identifier
       const resolvedDid = await resolveHandleToDid(identifier)
       if (!resolvedDid) {
-        return NextResponse.json({ error: 'Handle not found' }, { status: 404 })
+        return NextResponse.json({ error: 'Handle not found' }, { status: 404, headers: corsHeaders })
       }
       did = resolvedDid
     }
@@ -102,7 +114,7 @@ export async function GET(
         verified: true,
         verifiedAt: new Date().toISOString(),
         message: 'No attestations found for this identity',
-      })
+      }, { headers: corsHeaders })
     }
 
     // Verify each attestation
@@ -174,12 +186,12 @@ export async function GET(
       attestations: verifiedAttestations,
       verified: allValid,
       verifiedAt: new Date().toISOString(),
-    })
+    }, { headers: corsHeaders })
   } catch (error) {
     console.error('Verification error:', error)
     return NextResponse.json(
       { error: 'Verification failed', details: String(error) },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     )
   }
 }

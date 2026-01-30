@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
+import { useAccount } from 'wagmi'
 
 interface AuthButtonProps {
   variant?: 'desktop' | 'mobile'
@@ -12,6 +13,7 @@ interface AuthButtonProps {
 
 export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps) {
   const { isAuthenticated, isLoading, session, login, logout } = useAuth()
+  const { address: evmAddress } = useAccount()
   const [showModal, setShowModal] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   const [handle, setHandle] = useState('')
@@ -128,9 +130,14 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
         </button>
 
         {showDropdown && (
-          <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-lg shadow-lg border border-zinc-200/60 py-1 z-50">
-            <div className="px-3 py-2 text-xs text-zinc-400 border-b border-zinc-100">
-              {session.did.slice(0, 20)}...
+          <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-lg shadow-lg border border-zinc-200/60 py-1 z-50">
+            <div className="px-3 py-2 text-xs text-zinc-400 border-b border-zinc-100 space-y-1">
+              <div className="truncate" title={session.did}>{session.did.slice(0, 20)}...</div>
+              {evmAddress && (
+                <div className="truncate text-zinc-300" title={evmAddress}>
+                  {evmAddress.slice(0, 6)}...{evmAddress.slice(-4)}
+                </div>
+              )}
             </div>
             <Link
               href={`/verify/${session.handle}`}
