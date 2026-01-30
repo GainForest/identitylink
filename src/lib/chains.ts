@@ -29,3 +29,14 @@ export function getChainName(chainId: number): string {
 export function isSupported(chainId: number): chainId is SupportedChainId {
   return SUPPORTED_CHAINS.some(chain => chain.id === chainId)
 }
+
+export function getExplorerUrl(chainId: number, address: string): string {
+  const explorers: Record<SupportedChainId, string> = {
+    [mainnet.id]: 'https://etherscan.io',
+    [base.id]: 'https://basescan.org',
+    [optimism.id]: 'https://optimistic.etherscan.io',
+    [arbitrum.id]: 'https://arbiscan.io',
+  }
+  const baseUrl = explorers[chainId as SupportedChainId] || 'https://etherscan.io'
+  return `${baseUrl}/address/${address}`
+}
