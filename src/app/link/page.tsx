@@ -1,110 +1,286 @@
 'use client'
 
-import { useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useState, useCallback } from 'react'
+import Link from 'next/link'
+import { useAccount, useDisconnect } from 'wagmi'
 import { useAuth } from '@/lib/auth'
+import { getChainName, getExplorerUrl } from '@/lib/chains'
 import { AtprotoAuthStep } from '@/components/steps/AtprotoAuthStep'
 import { WalletConnectStep } from '@/components/steps/WalletConnectStep'
 import { ReviewStep } from '@/components/steps/ReviewStep'
-import { SuccessStep } from '@/components/steps/SuccessStep'
 
 type Step = 'atproto' | 'wallet' | 'review' | 'success'
 
+interface LinkedWallet {
+  address: string
+  chainId: number
+  uri: string
+}
+
 export default function LinkPage() {
-  const [attestationUri, setAttestationUri] = useState<string | null>(null)
+  const [linkedWallets, setLinkedWallets] = useState<LinkedWallet[]>([])
   const [manualStep, setManualStep] = useState<Step | null>(null)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
   
-  const { isAuthenticated, isLoading: authLoading } = useAuth()
-  const { isConnected } = useAccount()
+  const { session, isAuthenticated, isLoading: authLoading } = useAuth()
+  const { address, chain, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
 
   // Determine current step based on state
   const currentStep: Step = (() => {
-    if (attestationUri) return 'success'
+    if (manualStep === 'success') return 'success'
     if (manualStep) return manualStep
     if (isAuthenticated && isConnected) return 'review'
     if (isAuthenticated) return 'wallet'
     return 'atproto'
   })()
 
+  const handleSuccess = useCallback((uri: string) => {
+    if (address && chain) {
+      setLinkedWallets(prev => [...prev, { address, chainId: chain.id, uri }])
+    }
+    setManualStep('success')
+  }, [address, chain])
+
+  const handleLinkAnother = useCallback(() => {
+    disconnect()
+    setManualStep('wallet')
+  }, [disconnect])
+
+  const handleCopy = useCallback(async (value: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopiedField(field)
+      setTimeout(() => setCopiedField(null), 2000)
+    } catch {
+      // Fallback
+    }
+  }, [])
+
   // Loading state
   if (authLoading) {
     return (
-      <div className="pt-12 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+      <div className="pt-16 sm:pt-24 pb-16 flex flex-col items-center">
+        <div className="w-8 h-8 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
       </div>
     )
   }
 
-  return (
-    <div className="pt-8 sm:pt-12 pb-16">
-      {/* Progress indicator */}
-      <div className="flex items-center justify-center gap-2 mb-8">
-        {(['atproto', 'wallet', 'review', 'success'] as const).map((step, i) => (
-          <div key={step} className="flex items-center">
-            <div
-              className={`
-                w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all
-                ${currentStep === step 
-                  ? 'bg-blue-600 text-white' 
-                  : getStepIndex(currentStep) > i
-                    ? 'bg-green-500 text-white'
-                    : 'bg-zinc-100 text-zinc-400'
-                }
-              `}
-            >
-              {getStepIndex(currentStep) > i ? (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+  // Success state - clean minimal design
+  if (currentStep === 'success') {
+    const latestWallet = linkedWallets[linkedWallets.length - 1]
+    const verifyUrl = typeof window !== 'undefined'
+      ? `${window.location.origin}/verify/${session?.handle || session?.did}`
+      : ''
+
+    return (
+      <div className="pt-12 sm:pt-20 pb-16">
+        <div className="max-w-md mx-auto">
+          {/* Success header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
-              ) : (
-                i + 1
-              )}
+              </div>
+              <div>
+                <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900">
+                  Wallet Linked
+                </h2>
+                <p className="text-sm text-zinc-400">
+                  {linkedWallets.length} wallet{linkedWallets.length > 1 ? 's' : ''} connected to @{session?.handle}
+                </p>
+              </div>
             </div>
-            {i < 3 && (
-              <div 
-                className={`w-8 h-0.5 mx-1 ${
-                  getStepIndex(currentStep) > i ? 'bg-green-500' : 'bg-zinc-200'
-                }`} 
-              />
-            )}
           </div>
-        ))}
-      </div>
 
-      {/* Step labels */}
-      <div className="flex justify-between text-xs text-zinc-400 mb-8 px-2">
-        <span className={currentStep === 'atproto' ? 'text-blue-600 font-medium' : ''}>Sign In</span>
-        <span className={currentStep === 'wallet' ? 'text-blue-600 font-medium' : ''}>Connect</span>
-        <span className={currentStep === 'review' ? 'text-blue-600 font-medium' : ''}>Review</span>
-        <span className={currentStep === 'success' ? 'text-blue-600 font-medium' : ''}>Done</span>
-      </div>
+          {/* Linked wallets list */}
+          <div className="space-y-3 mb-8">
+            {linkedWallets.map((wallet, i) => (
+              <div 
+                key={wallet.uri}
+                className="flex items-center gap-3 py-3 px-4 -mx-4 rounded-lg bg-emerald-50/50"
+              >
+                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-sm font-medium">
+                  {i + 1}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-mono text-sm text-zinc-800 truncate">
+                    {wallet.address}
+                  </p>
+                  <p className="text-xs text-zinc-400">
+                    {getChainName(wallet.chainId)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleCopy(wallet.address, wallet.address)}
+                    className="p-1.5 rounded hover:bg-emerald-100 transition-colors"
+                    title="Copy address"
+                  >
+                    {copiedField === wallet.address ? (
+                      <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                      </svg>
+                    )}
+                  </button>
+                  <a
+                    href={getExplorerUrl(wallet.chainId, wallet.address)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded hover:bg-emerald-100 transition-colors"
+                    title="View on explorer"
+                  >
+                    <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
 
-      {/* Step content */}
-      {currentStep === 'atproto' && (
-        <AtprotoAuthStep />
-      )}
-      
-      {currentStep === 'wallet' && (
-        <WalletConnectStep 
-          onContinue={() => setManualStep('review')} 
-        />
-      )}
-      
-      {currentStep === 'review' && (
-        <ReviewStep
-          onSuccess={(uri) => setAttestationUri(uri)}
-          onBack={() => setManualStep('wallet')}
-        />
-      )}
-      
-      {currentStep === 'success' && attestationUri && (
-        <SuccessStep attestationUri={attestationUri} />
-      )}
+          {/* Actions */}
+          <div className="space-y-3">
+            <button
+              onClick={handleLinkAnother}
+              className="group flex items-center gap-3 w-full py-3 px-4 -mx-4 rounded-lg hover:bg-zinc-50 transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-zinc-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
+                <svg className="w-4 h-4 text-zinc-400 group-hover:text-emerald-600 transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </div>
+              <span className="text-base font-medium text-zinc-800 group-hover:text-emerald-700 transition-colors">
+                Link another wallet
+              </span>
+            </button>
+
+            <Link
+              href={`/verify/${session?.handle || session?.did}`}
+              className="group flex items-center gap-3 w-full py-3 px-4 -mx-4 rounded-lg hover:bg-zinc-50 transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-zinc-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
+                <svg className="w-4 h-4 text-zinc-400 group-hover:text-emerald-600 transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <span className="text-base font-medium text-zinc-800 group-hover:text-emerald-700 transition-colors">
+                View verification page
+              </span>
+            </Link>
+
+            <Link
+              href="/manage"
+              className="group flex items-center gap-3 w-full py-3 px-4 -mx-4 rounded-lg hover:bg-zinc-50 transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-zinc-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
+                <svg className="w-4 h-4 text-zinc-400 group-hover:text-emerald-600 transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.204-.107-.397.165-.71.505-.78.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <span className="text-base font-medium text-zinc-800 group-hover:text-emerald-700 transition-colors">
+                Manage linked wallets
+              </span>
+            </Link>
+          </div>
+
+          {/* Share link */}
+          <div className="mt-8 pt-6 border-t border-zinc-100">
+            <p className="text-xs text-zinc-400 mb-2">Share your verification link</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={verifyUrl}
+                readOnly
+                className="flex-1 px-3 py-2 text-xs bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-500 font-mono truncate"
+              />
+              <button
+                onClick={() => handleCopy(verifyUrl, 'verifyUrl')}
+                className={`px-3 py-2 text-xs rounded-lg font-medium transition-colors ${
+                  copiedField === 'verifyUrl'
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+                }`}
+              >
+                {copiedField === 'verifyUrl' ? 'Copied' : 'Copy'}
+              </button>
+            </div>
+          </div>
+
+          {/* Technical details */}
+          {latestWallet && (
+            <details className="mt-4 text-xs">
+              <summary className="text-zinc-300 cursor-pointer hover:text-zinc-400">
+                Technical details
+              </summary>
+              <p className="mt-2 font-mono text-zinc-400 break-all bg-zinc-50 p-2 rounded">
+                {latestWallet.uri}
+              </p>
+            </details>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Linking flow
+  return (
+    <div className="pt-12 sm:pt-20 pb-16">
+      <div className="max-w-md mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900">
+            Link Identity
+          </h2>
+          <p className="text-sm text-zinc-400 mt-1">
+            Connect your Bluesky identity to an Ethereum wallet
+          </p>
+        </div>
+
+        {/* Progress */}
+        <div className="flex items-center gap-1 mb-8 text-xs">
+          <span className={currentStep === 'atproto' ? 'text-emerald-600 font-medium' : 'text-zinc-300'}>
+            Sign in
+          </span>
+          <svg className="w-4 h-4 text-zinc-200" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          <span className={currentStep === 'wallet' ? 'text-emerald-600 font-medium' : 'text-zinc-300'}>
+            Connect wallet
+          </span>
+          <svg className="w-4 h-4 text-zinc-200" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          <span className={currentStep === 'review' ? 'text-emerald-600 font-medium' : 'text-zinc-300'}>
+            Sign & link
+          </span>
+        </div>
+
+        {/* Step content */}
+        {currentStep === 'atproto' && (
+          <AtprotoAuthStep />
+        )}
+        
+        {currentStep === 'wallet' && (
+          <WalletConnectStep 
+            onContinue={() => setManualStep('review')} 
+          />
+        )}
+        
+        {currentStep === 'review' && (
+          <ReviewStep
+            onSuccess={handleSuccess}
+            onBack={() => setManualStep('wallet')}
+          />
+        )}
+      </div>
     </div>
   )
-}
-
-function getStepIndex(step: Step): number {
-  const steps: Step[] = ['atproto', 'wallet', 'review', 'success']
-  return steps.indexOf(step)
 }
