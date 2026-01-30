@@ -305,6 +305,7 @@ export default function VerifyIdentifierPage() {
         isOpen={isTipModalOpen}
         onClose={() => setIsTipModalOpen(false)}
         recipientName={result.displayName || result.handle}
+        recipientAddress={result.attestations.find(a => a.verified)?.address || ''}
       />
     </div>
   )

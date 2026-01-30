@@ -30,16 +30,16 @@ type AmountUSD = 1 | 5 | 10
 const AMOUNTS: AmountUSD[] = [1, 5, 10]
 const CHAINS = [mainnet, base, optimism, arbitrum]
 
-// Recipient address for tips (lowercase to avoid checksum issues)
-const TIP_RECIPIENT = '0x9acef55e7d6141d99261f0d25073c64350e0ff02' as Address
+
 
 interface TipModalProps {
   isOpen: boolean
   onClose: () => void
   recipientName?: string
+  recipientAddress: string
 }
 
-export function TipModal({ isOpen, onClose, recipientName }: TipModalProps) {
+export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: TipModalProps) {
   const { address, isConnected, chain } = useAccount()
   const { switchChainAsync } = useSwitchChain()
   const { connect, connectors, isPending: isConnectPending } = useConnect()
@@ -177,7 +177,7 @@ export function TipModal({ isOpen, onClose, recipientName }: TipModalProps) {
       
       if (selectedToken === 'ETH') {
         await sendTransactionAsync({
-          to: TIP_RECIPIENT,
+          to: recipientAddress as Address,
           value: getTokenAmount(),
         })
       } else {
@@ -190,7 +190,7 @@ export function TipModal({ isOpen, onClose, recipientName }: TipModalProps) {
           address: tokenAddr,
           abi: erc20Abi,
           functionName: 'transfer',
-          args: [TIP_RECIPIENT, getTokenAmount()],
+          args: [recipientAddress as Address, getTokenAmount()],
         })
       }
       
