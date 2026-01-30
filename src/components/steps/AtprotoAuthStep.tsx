@@ -46,7 +46,7 @@ export function AtprotoAuthStep() {
             autoFocus
             className="w-full px-4 py-3 text-base bg-white border border-zinc-200 rounded-xl
                        placeholder:text-zinc-300
-                       focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400
+                       focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400
                        disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <p className="text-sm text-zinc-400 mt-1.5">
@@ -63,8 +63,8 @@ export function AtprotoAuthStep() {
         <button
           type="submit"
           disabled={isLoading || !handle.trim()}
-          className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-xl
-                     hover:bg-blue-700 transition-colors
+          className="w-full py-3 px-4 bg-emerald-600 text-white font-medium rounded-xl
+                     hover:bg-emerald-700 transition-colors
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (

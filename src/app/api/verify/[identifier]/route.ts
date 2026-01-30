@@ -43,6 +43,9 @@ export async function GET(
     // Resolve to DID if needed
     let did: string
     let handle: string | undefined
+    let displayName: string | undefined
+    let avatar: string | undefined
+    let pds: string | undefined
 
     if (identifier.startsWith('did:')) {
       did = identifier
@@ -56,6 +59,35 @@ export async function GET(
       did = resolvedDid
     }
 
+    // Fetch profile info
+    try {
+      const profileUrl = `https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${encodeURIComponent(did)}`
+      const profileRes = await fetch(profileUrl, { next: { revalidate: 3600 } })
+      if (profileRes.ok) {
+        const profile = await profileRes.json()
+        handle = handle || profile.handle
+        displayName = profile.displayName
+        avatar = profile.avatar
+      }
+    } catch {
+      // Silently continue without profile info
+    }
+
+    // Resolve PDS
+    try {
+      const plcUrl = `https://plc.directory/${encodeURIComponent(did)}`
+      const plcRes = await fetch(plcUrl, { next: { revalidate: 3600 } })
+      if (plcRes.ok) {
+        const plcDoc = await plcRes.json()
+        const pdsService = plcDoc.service?.find((s: { type: string }) => s.type === 'AtprotoPersonalDataServer')
+        if (pdsService?.serviceEndpoint) {
+          pds = new URL(pdsService.serviceEndpoint).hostname
+        }
+      }
+    } catch {
+      // Silently continue without PDS info
+    }
+
     // Fetch attestations from PDS
     const attestations = await getAttestations(did)
 
@@ -63,8 +95,12 @@ export async function GET(
       return NextResponse.json({
         did,
         handle,
+        displayName,
+        avatar,
+        pds,
         attestations: [],
         verified: true,
+        verifiedAt: new Date().toISOString(),
         message: 'No attestations found for this identity',
       })
     }
@@ -110,6 +146,9 @@ export async function GET(
     return NextResponse.json({
       did,
       handle,
+      displayName,
+      avatar,
+      pds,
       attestations: verifiedAttestations,
       verified: allValid,
       verifiedAt: new Date().toISOString(),

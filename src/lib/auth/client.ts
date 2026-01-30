@@ -1,7 +1,6 @@
 import { NodeOAuthClient } from '@atproto/oauth-client-node'
 import { JoseKey } from '@atproto/jwk-jose'
 import { env } from '../env'
-import { getRawSession } from '../session'
 
 const oauthClientKey = 'globalOAuthClient'
 // In development, clear cached client on hot reload to pick up config changes
@@ -41,58 +40,35 @@ const sharedStore: Map<string, unknown> = (global as Record<string, unknown>)[gl
 // State store - in-memory only, used during short-lived OAuth flow
 const stateStore = {
   async get(key: string) {
-    return sharedStore.get(`state:${key}`)
+    const value = sharedStore.get(`state:${key}`)
+    console.log(`[StateStore] GET state:${key} ->`, value ? 'found' : 'not found', `(store has ${sharedStore.size} entries)`)
+    return value
   },
   async set(key: string, value: unknown) {
     sharedStore.set(`state:${key}`, value)
+    console.log(`[StateStore] SET state:${key} (store now has ${sharedStore.size} entries)`)
   },
   async del(key: string) {
     sharedStore.delete(`state:${key}`)
+    console.log(`[StateStore] DEL state:${key} (store now has ${sharedStore.size} entries)`)
   },
 }
 
-// Session store - syncs with cookie for persistence
+// Session store - in-memory only (OAuth sessions are too large for cookies)
+// For production, use a proper session store (Redis, database, etc.)
 const sessionStore = {
   async get(key: string) {
-    const memValue = sharedStore.get(`session:${key}`)
-    if (memValue) {
-      return memValue
-    }
-
-    try {
-      const session = await getRawSession()
-      if (session.oauthSession && session.did === key) {
-        const parsed = JSON.parse(session.oauthSession)
-        sharedStore.set(`session:${key}`, parsed)
-        return parsed
-      }
-    } catch (err) {
-      console.warn('Failed to restore OAuth session from cookie:', err)
-    }
-
-    return undefined
+    const value = sharedStore.get(`session:${key}`)
+    console.log(`[SessionStore] GET session:${key} ->`, value ? 'found' : 'not found')
+    return value
   },
   async set(key: string, value: unknown) {
     sharedStore.set(`session:${key}`, value)
-
-    try {
-      const session = await getRawSession()
-      session.oauthSession = JSON.stringify(value)
-      await session.save()
-    } catch (err) {
-      console.warn('Failed to save OAuth session to cookie:', err)
-    }
+    console.log(`[SessionStore] SET session:${key}`)
   },
   async del(key: string) {
     sharedStore.delete(`session:${key}`)
-
-    try {
-      const session = await getRawSession()
-      session.oauthSession = undefined
-      await session.save()
-    } catch (err) {
-      console.warn('Failed to clear OAuth session from cookie:', err)
-    }
+    console.log(`[SessionStore] DEL session:${key}`)
   },
 }
 

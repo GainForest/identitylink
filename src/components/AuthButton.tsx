@@ -2,9 +2,15 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
 
-export function AuthButton() {
+interface AuthButtonProps {
+  variant?: 'desktop' | 'mobile'
+  onNavigate?: () => void
+}
+
+export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps) {
   const { isAuthenticated, isLoading, session, login, logout } = useAuth()
   const [showModal, setShowModal] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
@@ -53,6 +59,50 @@ export function AuthButton() {
   }
 
   if (isAuthenticated && session) {
+    // Mobile: render profile + sign out inline (no dropdown)
+    if (variant === 'mobile') {
+      return (
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-500">
+            {session.avatar ? (
+              <Image
+                src={session.avatar}
+                alt={session.handle}
+                width={20}
+                height={20}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-5 h-5 rounded-full bg-zinc-200 flex items-center justify-center text-[10px] text-zinc-500">
+                {(session.displayName || session.handle).charAt(0).toUpperCase()}
+              </div>
+            )}
+            <span className="truncate">{session.displayName || session.handle}</span>
+          </div>
+          <Link
+            href={`/verify/${session.handle}`}
+            onClick={onNavigate}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 rounded transition-colors"
+          >
+            <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            My Links
+          </Link>
+          <button
+            onClick={() => { onNavigate?.(); handleLogout() }}
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 rounded transition-colors cursor-pointer"
+          >
+            <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+            </svg>
+            Sign out
+          </button>
+        </div>
+      )
+    }
+
+    // Desktop: dropdown
     return (
       <div className="relative" ref={dropdownRef}>
         <button
@@ -82,6 +132,17 @@ export function AuthButton() {
             <div className="px-3 py-2 text-xs text-zinc-400 border-b border-zinc-100">
               {session.did.slice(0, 20)}...
             </div>
+            <Link
+              href={`/verify/${session.handle}`}
+              onClick={() => setShowDropdown(false)}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
+            >
+              <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              My Links
+            </Link>
+            <div className="h-px bg-zinc-100 my-1" />
             <button
               onClick={() => { setShowDropdown(false); handleLogout() }}
               className="flex items-center gap-2 w-full px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors cursor-pointer"
@@ -140,7 +201,7 @@ export function AuthButton() {
                 autoFocus
                 className="w-full px-3 py-2 text-sm bg-white border border-zinc-200/60 rounded-lg
                            placeholder:text-zinc-300
-                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400
+                           focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400
                            disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <p className="text-xs text-zinc-300 mt-1.5">
@@ -165,8 +226,8 @@ export function AuthButton() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !handle.trim()}
-                  className="flex-1 px-3 py-2 text-sm text-white bg-blue-600 rounded-lg
-                             hover:bg-blue-700 transition-colors
+                  className="flex-1 px-3 py-2 text-sm text-white bg-emerald-600 rounded-lg
+                             hover:bg-emerald-700 transition-colors
                              disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Connecting...' : 'Connect'}

@@ -9,7 +9,6 @@ import {
   MetaMaskIcon,
   WalletConnectIcon,
   SafeIcon,
-  InjectedIcon,
 } from '@/components/WalletButton'
 
 interface WalletConnectStepProps {
@@ -34,7 +33,7 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
         </div>
 
         {/* Connected wallet card */}
-        <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+        <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm text-zinc-500">Connected Wallet</span>
             <button
@@ -65,7 +64,7 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
         {/* ATProto identity reminder */}
         <div className="p-4 bg-zinc-50 rounded-xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
               <span className="text-lg">🦋</span>
             </div>
             <div>
@@ -79,8 +78,8 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
 
         <button
           onClick={onContinue}
-          className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-xl
-                     hover:bg-blue-700 transition-colors"
+          className="w-full py-3 px-4 bg-emerald-600 text-white font-medium rounded-xl
+                     hover:bg-emerald-700 transition-colors"
         >
           Continue to Review
         </button>
@@ -115,11 +114,17 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
       {/* Wallet options */}
       <div className="grid grid-cols-2 gap-3">
         <WalletButton
+          connectorId="injected"
+          name="MetaMask"
+          icon={<MetaMaskIcon />}
+          description="Extension"
+          recommended
+        />
+        <WalletButton
           connectorId="coinbaseWalletSDK"
           name="Coinbase"
           icon={<CoinbaseIcon />}
           description="Passkey"
-          recommended
         />
         <WalletButton
           connectorId="walletConnect"
@@ -133,13 +138,12 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
           icon={<SafeIcon />}
           description="Multisig"
         />
-        <WalletButton
-          connectorId="injected"
-          name="Browser"
-          icon={<InjectedIcon />}
-          description="Extension"
-        />
       </div>
+      
+      {/* Rabby note */}
+      <p className="text-xs text-zinc-400 text-center">
+        Using Rabby? Click MetaMask - it works with all browser wallets.
+      </p>
 
       {/* Security note */}
       <div className="flex gap-3 p-4 bg-zinc-50 rounded-xl text-sm">

@@ -67,7 +67,7 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
   if (status === 'storing') {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4" />
+        <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4" />
         <h3 className="text-lg font-medium text-zinc-800 mb-2">Storing Attestation</h3>
         <p className="text-sm text-zinc-500">Saving to your ATProto repository...</p>
       </div>
@@ -86,7 +86,7 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
       </div>
 
       {/* Link visualization */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+      <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
         {/* ATProto identity */}
         <div className="bg-white rounded-xl p-4 mb-3">
           <div className="flex items-center gap-3">
@@ -103,8 +103,8 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
 
         {/* Link arrow */}
         <div className="flex justify-center py-2">
-          <div className="w-10 h-10 rounded-full bg-white border-2 border-blue-200 flex items-center justify-center">
-            <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <div className="w-10 h-10 rounded-full bg-white border-2 border-emerald-200 flex items-center justify-center">
+            <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
             </svg>
           </div>
@@ -201,8 +201,8 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
         <button
           onClick={handleSign}
           disabled={isPending || status !== 'idle'}
-          className="flex-1 py-3 px-4 bg-blue-600 text-white font-medium rounded-xl
-                     hover:bg-blue-700 transition-colors
+          className="flex-1 py-3 px-4 bg-emerald-600 text-white font-medium rounded-xl
+                     hover:bg-emerald-700 transition-colors
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {walletType === 'smart-wallet' ? '🔐 Sign with Biometrics' : '✍️ Sign Message'}

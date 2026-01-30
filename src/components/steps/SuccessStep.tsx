@@ -41,8 +41,8 @@ export function SuccessStep({ attestationUri }: SuccessStepProps) {
     <div className="space-y-6">
       {/* Success header */}
       <div className="text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
-          <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
+          <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
@@ -55,10 +55,10 @@ export function SuccessStep({ attestationUri }: SuccessStepProps) {
       </div>
 
       {/* Linked identities summary */}
-      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+      <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
         <div className="flex items-center justify-center gap-4">
           <div className="text-center">
-            <div className="w-12 h-12 mx-auto rounded-full bg-white border border-green-200 flex items-center justify-center mb-2">
+            <div className="w-12 h-12 mx-auto rounded-full bg-white border border-emerald-200 flex items-center justify-center mb-2">
               <span className="text-xl">🦋</span>
             </div>
             <p className="text-sm font-medium text-zinc-800">
@@ -66,14 +66,14 @@ export function SuccessStep({ attestationUri }: SuccessStepProps) {
             </p>
           </div>
           
-          <div className="w-8 h-8 rounded-full bg-green-200 flex items-center justify-center">
-            <svg className="w-4 h-4 text-green-700" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+          <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center">
+            <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
             </svg>
           </div>
 
           <div className="text-center">
-            <div className="w-12 h-12 mx-auto rounded-full bg-white border border-green-200 flex items-center justify-center mb-2">
+            <div className="w-12 h-12 mx-auto rounded-full bg-white border border-emerald-200 flex items-center justify-center mb-2">
               <span className="text-xl">👛</span>
             </div>
             <p className="text-sm font-mono text-zinc-800">
@@ -101,7 +101,7 @@ export function SuccessStep({ attestationUri }: SuccessStepProps) {
             onClick={handleCopy}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               copied
-                ? 'bg-green-100 text-green-700'
+                ? 'bg-emerald-100 text-emerald-700'
                 : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
             }`}
           >
@@ -125,8 +125,8 @@ export function SuccessStep({ attestationUri }: SuccessStepProps) {
         
         <Link
           href="/link"
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 
-                     text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 
+                     text-white font-medium rounded-xl hover:bg-emerald-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

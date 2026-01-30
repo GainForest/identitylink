@@ -70,10 +70,16 @@ export function createAttestationMessage(params: {
 export type SignatureType = 'eoa' | 'erc1271' | 'erc6492'
 
 /**
+ * ATProto collection NSID for EVM address attestations.
+ * Lexicon defined at: @gainforest-lexicons/lexicons/org/impactindexer/link/attestation.json
+ */
+export const ATTESTATION_COLLECTION = 'org.impactindexer.link.attestation'
+
+/**
  * Stored attestation record format for PDS.
  */
 export interface StoredAttestation {
-  $type: 'xyz.atproto.evm.addressAttestation'
+  $type: typeof ATTESTATION_COLLECTION
   address: string
   chainId: number
   signature: Hex
@@ -87,11 +93,6 @@ export interface StoredAttestation {
   signatureType: SignatureType
   createdAt: string
 }
-
-/**
- * ATProto collection NSID for EVM address attestations.
- */
-export const ATTESTATION_COLLECTION = 'xyz.atproto.evm.addressAttestation'
 
 /**
  * Convert an attestation message to storage format.

@@ -1,122 +1,120 @@
+'use client'
+
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
+
+function ErrorBanner() {
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
+  
+  if (!error) return null
+  
+  return (
+    <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-lg">
+      <p className="text-sm text-red-700">
+        <span className="font-medium">Authentication failed:</span> {error}
+      </p>
+    </div>
+  )
+}
 
 export default function LandingPage() {
   return (
-    <div className="pt-12 sm:pt-20 pb-16">
+    <div className="pt-16 sm:pt-24 pb-16">
+      <Suspense fallback={null}>
+        <ErrorBanner />
+      </Suspense>
+      
       {/* Hero */}
       <div className="max-w-lg">
-        <h2 className="font-[family-name:var(--font-garamond)] text-3xl sm:text-4xl text-zinc-900 leading-tight">
-          Link Your Identities
-        </h2>
-        <p className="text-zinc-500 mt-3 leading-relaxed">
-          Create a verifiable connection between your Bluesky identity and Ethereum wallet. 
-          Accept payments, build reputation, and prove you&apos;re really you.
+        <h1 className="font-[family-name:var(--font-garamond)] text-3xl sm:text-4xl text-zinc-900 leading-tight">
+          Bridge Your Identities
+        </h1>
+        <p className="text-zinc-500 mt-4 text-base leading-relaxed">
+          Link your Bluesky identity to your Ethereum wallet with cryptographic proof.
         </p>
       </div>
 
-      {/* Main CTA */}
-      <div className="mt-8">
+      {/* Actions */}
+      <div className="mt-10 flex flex-col sm:flex-row gap-3">
         <Link
           href="/link"
-          className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 text-white font-medium 
-                     rounded-xl hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 
+                     bg-emerald-600 text-white font-medium rounded-lg
+                     hover:bg-emerald-700 transition-colors"
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
           </svg>
-          Link Your Identity
+          Link Identity
+        </Link>
+        <Link
+          href="/verify"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 
+                     bg-white text-zinc-700 font-medium rounded-lg border border-zinc-200
+                     hover:bg-zinc-50 hover:border-zinc-300 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Verify
         </Link>
       </div>
 
-      {/* Features */}
-      <div className="mt-12 space-y-4">
-        <FeatureRow
-          icon="💸"
-          title="Receive Payments"
-          description="Share your Bluesky handle and receive crypto to your linked wallet"
-        />
-        <FeatureRow
-          icon="🔒"
-          title="Cryptographic Proof"
-          description="Create unforgeable proof that you control both identities"
-        />
-        <FeatureRow
-          icon="🦋"
-          title="Works with Bluesky"
-          description="Sign in with your existing ATProto identity"
-        />
-        <FeatureRow
-          icon="👛"
-          title="Any Wallet"
-          description="Supports MetaMask, Coinbase, Safe, and more"
-        />
-      </div>
-
-      {/* Supported chains */}
-      <div className="mt-12 pt-8 border-t border-zinc-100">
-        <h3 className="text-sm font-medium text-zinc-700 mb-4">Supported Networks</h3>
-        <div className="flex flex-wrap gap-3">
-          <ChainBadge name="Ethereum" color="#627EEA" />
-          <ChainBadge name="Base" color="#0052FF" />
-          <ChainBadge name="Optimism" color="#FF0420" />
-          <ChainBadge name="Arbitrum" color="#12AAFF" />
-        </div>
-      </div>
-
       {/* How it works */}
-      <div className="mt-12 pt-8 border-t border-zinc-100">
-        <h3 className="text-sm font-medium text-zinc-700 mb-4">How it works</h3>
-        <div className="space-y-4">
-          <StepRow number={1} title="Sign in with Bluesky" description="Authenticate with your ATProto identity" />
-          <StepRow number={2} title="Connect wallet" description="Link any Ethereum wallet you control" />
-          <StepRow number={3} title="Sign message" description="Create a cryptographic attestation" />
-          <StepRow number={4} title="Share & verify" description="Anyone can verify your linked identities" />
+      <div className="mt-16">
+        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-6">
+          How it works
+        </h2>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Step number={1} title="Sign in" description="Authenticate with your Bluesky handle" />
+          <Step number={2} title="Connect" description="Link your Ethereum wallet" />
+          <Step number={3} title="Sign" description="Create a cryptographic attestation" />
+          <Step number={4} title="Share" description="Anyone can verify the link" />
         </div>
       </div>
 
-      {/* Verify existing */}
-      <div className="mt-12 pt-8 border-t border-zinc-100">
-        <p className="text-sm text-zinc-500">
-          Want to verify someone&apos;s link?{' '}
-          <Link href="/verify/example.bsky.social" className="text-blue-600 hover:underline">
-            Try the verification page
-          </Link>
-        </p>
+      {/* Features */}
+      <div className="mt-16">
+        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-6">
+          Features
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Feature title="Self-sovereign" description="Data stored in your ATProto PDS" />
+          <Feature title="Multi-chain" description="Ethereum, Base, Optimism, Arbitrum" />
+          <Feature title="Any wallet" description="MetaMask, Coinbase, Safe, and more" />
+          <Feature title="Verifiable" description="EIP-712 cryptographic signatures" />
+        </div>
       </div>
     </div>
   )
 }
 
-function FeatureRow({ icon, title, description }: { icon: string; title: string; description: string }) {
+function Step({ number, title, description }: { number: number; title: string; description: string }) {
   return (
-    <div className="flex items-start gap-4 p-4 -mx-4 rounded-lg hover:bg-zinc-50 transition-colors">
-      <span className="text-2xl">{icon}</span>
-      <div>
-        <h3 className="font-medium text-zinc-800">{title}</h3>
-        <p className="text-sm text-zinc-500 mt-0.5">{description}</p>
-      </div>
-    </div>
-  )
-}
-
-function ChainBadge({ name, color }: { name: string; color: string }) {
-  return (
-    <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-50 rounded-full">
-      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-      <span className="text-sm text-zinc-600">{name}</span>
-    </div>
-  )
-}
-
-function StepRow({ number, title, description }: { number: number; title: string; description: string }) {
-  return (
-    <div className="flex items-start gap-4">
-      <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 text-sm font-medium flex items-center justify-center shrink-0">
+    <div className="flex items-start gap-3">
+      <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium 
+                      flex items-center justify-center shrink-0 mt-0.5">
         {number}
       </div>
       <div>
-        <h4 className="font-medium text-zinc-800">{title}</h4>
+        <h3 className="font-medium text-zinc-800">{title}</h3>
         <p className="text-sm text-zinc-500">{description}</p>
+      </div>
+    </div>
+  )
+}
+
+function Feature({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <svg className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      </svg>
+      <div>
+        <span className="text-sm text-zinc-700">{title}</span>
+        <span className="text-sm text-zinc-400"> — {description}</span>
       </div>
     </div>
   )

@@ -21,7 +21,6 @@ export interface VerificationResult {
   error?: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyPublicClient = {
   getBytecode: (args: { address: Address }) => Promise<Hex | undefined>
   readContract: (args: unknown) => Promise<unknown>

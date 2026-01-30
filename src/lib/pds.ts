@@ -54,12 +54,16 @@ export async function storeAttestation(
   }
 }
 
+export interface AttestationWithKey extends StoredAttestation {
+  rkey: string
+}
+
 /**
  * Get all attestations for a given DID from their PDS.
  */
 export async function getAttestations(
   did: string
-): Promise<StoredAttestation[]> {
+): Promise<AttestationWithKey[]> {
   // Create an unauthenticated agent for public reads
   const agent = new Agent({ service: 'https://bsky.social' })
 
@@ -69,7 +73,15 @@ export async function getAttestations(
       collection: ATTESTATION_COLLECTION,
     })
 
-    return response.data.records.map(r => r.value as unknown as StoredAttestation)
+    return response.data.records.map(r => {
+      // Extract rkey from URI: at://did:plc:xxx/collection/rkey
+      const uri = r.uri
+      const rkey = uri.split('/').pop() || ''
+      return {
+        ...(r.value as unknown as StoredAttestation),
+        rkey,
+      }
+    })
   } catch (error) {
     // If collection doesn't exist or repo not found, return empty array
     console.warn('Failed to fetch attestations:', error)

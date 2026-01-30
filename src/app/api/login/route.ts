@@ -24,9 +24,11 @@ export async function POST(request: NextRequest) {
       await session.save()
     }
 
+    console.log('[Login] Authorizing handle:', handle)
     const url = await client.authorize(handle, {
       scope: 'atproto transition:generic',
     })
+    console.log('[Login] Authorization URL generated, state should be stored')
 
     return NextResponse.json({ redirectUrl: url.toString() })
   } catch (error) {

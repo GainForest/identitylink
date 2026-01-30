@@ -4,6 +4,8 @@ import { cookies } from 'next/headers'
 
 /**
  * Session data stored in the encrypted cookie.
+ * Note: OAuth session tokens are stored in-memory only (they're too large for cookies).
+ * For production, use a proper session store (Redis, database, etc.).
  */
 export interface Session {
   did?: string
@@ -11,8 +13,6 @@ export interface Session {
   displayName?: string
   avatar?: string
   returnTo?: string
-  // OAuth session data (serialized) - persisted across serverless invocations
-  oauthSession?: string
 }
 
 const isProduction = process.env.NODE_ENV === 'production'

@@ -128,6 +128,26 @@ export function SafeIcon({ className = 'w-10 h-10' }: { className?: string }) {
   )
 }
 
+export function RabbyIcon({ className = 'w-10 h-10' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="8" fill="url(#rabby-gradient)" />
+      <path
+        d="M22.5 12.5c0-2.5-2-4.5-4.5-4.5h-4c-2.5 0-4.5 2-4.5 4.5v2c0 .8.2 1.6.6 2.2l-.6 4.8c0 .3.2.5.5.5h1c.3 0 .5-.2.5-.5l.4-3.2c.6.4 1.3.7 2.1.7h4c2.5 0 4.5-2 4.5-4.5v-2z"
+        fill="white"
+      />
+      <circle cx="12.5" cy="12" r="1.5" fill="#8697FF" />
+      <circle cx="19.5" cy="12" r="1.5" fill="#8697FF" />
+      <defs>
+        <linearGradient id="rabby-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#8697FF" />
+          <stop offset="1" stopColor="#6B7AED" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
 export function InjectedIcon({ className = 'w-10 h-10' }: { className?: string }) {
   return (
     <div className={`${className} rounded-lg bg-zinc-100 flex items-center justify-center`}>

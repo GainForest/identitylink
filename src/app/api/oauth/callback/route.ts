@@ -6,10 +6,12 @@ import { getRawSession } from '@/lib/session'
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  console.log('[OAuth Callback] Received callback request')
   try {
     const client = await getGlobalOAuthClient()
     const url = new URL(request.url)
     const params = new URLSearchParams(url.search)
+    console.log('[OAuth Callback] Params:', { state: params.get('state')?.slice(0, 20) + '...', code: params.get('code')?.slice(0, 20) + '...' })
 
     // Retry OAuth callback up to 3 times for network errors
     let oauthSession
@@ -77,10 +79,13 @@ export async function GET(request: NextRequest) {
 
     return Response.redirect(`${origin}${redirectPath}`, 303)
   } catch (error) {
-    console.error('OAuth callback failed:', error)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorStack = error instanceof Error ? error.stack : undefined
+    console.error('[OAuth Callback] FAILED:', errorMessage)
+    console.error('[OAuth Callback] Stack:', errorStack)
     const requestUrl = new URL(request.url)
     return Response.redirect(
-      `${requestUrl.origin}/?error=${encodeURIComponent('Authentication failed - please try again')}`,
+      `${requestUrl.origin}/?error=${encodeURIComponent(errorMessage || 'Authentication failed - please try again')}`,
       303,
     )
   }
