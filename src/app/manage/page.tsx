@@ -4,11 +4,23 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
 import { getChainName, getExplorerUrl } from '@/lib/chains'
-import type { AttestationWithKey } from '@/lib/pds'
+import type { SignatureType } from '@/lib/attestation'
+
+interface VerifiedAttestation {
+  address: string
+  chainId: number
+  signature: string
+  signatureType: SignatureType
+  createdAt: string
+  verified: boolean
+  verifiedSignatureType: SignatureType
+  verificationError?: string
+  rkey: string
+}
 
 export default function ManagePage() {
   const { session, isLoading: authLoading } = useAuth()
-  const [attestations, setAttestations] = useState<AttestationWithKey[]>([])
+  const [attestations, setAttestations] = useState<VerifiedAttestation[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [deletingKey, setDeletingKey] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -29,7 +41,8 @@ export default function ManagePage() {
 
     try {
       setIsLoading(true)
-      const res = await fetch(`/api/attestations/${encodeURIComponent(session.did)}`)
+      // Use the verify endpoint to get verification status
+      const res = await fetch(`/api/verify/${encodeURIComponent(session.did)}`)
       if (res.ok) {
         const data = await res.json()
         setAttestations(data.attestations || [])
@@ -77,6 +90,10 @@ export default function ManagePage() {
       setDeletingKey(null)
     }
   }
+
+  // Count verified vs total
+  const verifiedCount = attestations.filter(a => a.verified).length
+  const totalCount = attestations.length
 
   if (authLoading) {
     return (
@@ -134,12 +151,22 @@ export default function ManagePage() {
               <span className="font-medium text-zinc-800">
                 @{session.handle || session.did.slice(0, 20) + '...'}
               </span>
-              {attestations.length > 0 && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-medium">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                  </svg>
-                  {attestations.length} linked
+              {totalCount > 0 && (
+                <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                  verifiedCount === totalCount 
+                    ? 'bg-emerald-100 text-emerald-700' 
+                    : 'bg-amber-100 text-amber-700'
+                }`}>
+                  {verifiedCount === totalCount ? (
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                  )}
+                  {verifiedCount}/{totalCount} verified
                 </span>
               )}
             </div>
@@ -243,22 +270,34 @@ function WalletCard({
   onUnlink,
   isDeleting,
 }: {
-  attestation: AttestationWithKey
+  attestation: VerifiedAttestation
   copiedField: string | null
   onCopy: (value: string, field: string) => void
   onUnlink: () => void
   isDeleting: boolean
 }) {
+  const isValid = attestation.verified
+
   return (
-    <div className="p-4 rounded-xl border bg-white border-zinc-200 hover:border-zinc-300 transition-colors">
+    <div className={`p-4 rounded-xl border ${
+      isValid 
+        ? 'bg-emerald-50/50 border-emerald-200' 
+        : 'bg-red-50/50 border-red-200'
+    }`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-sm font-medium text-emerald-800">
-              Verified Wallet
+            {isValid ? (
+              <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            )}
+            <span className={`text-sm font-medium ${isValid ? 'text-emerald-800' : 'text-red-800'}`}>
+              {isValid ? 'Valid Signature' : 'Invalid Signature'}
             </span>
           </div>
           
@@ -275,7 +314,7 @@ function WalletCard({
               href={getExplorerUrl(attestation.chainId, attestation.address)}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1 rounded hover:bg-zinc-100 transition-colors shrink-0"
+              className="p-1 rounded hover:bg-white/50 transition-colors shrink-0"
               title="View on block explorer"
             >
               <svg className="w-3.5 h-3.5 text-zinc-400 hover:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -297,17 +336,24 @@ function WalletCard({
               </svg>
               {new Date(attestation.createdAt).toLocaleDateString()}
             </span>
-            <span className="px-1.5 py-0.5 bg-zinc-100 rounded text-[10px] uppercase tracking-wide">
+            <span className="px-1.5 py-0.5 bg-white/50 rounded text-[10px] uppercase tracking-wide">
               {attestation.signatureType}
             </span>
           </div>
+
+          {attestation.verificationError && (
+            <p className="mt-2 text-xs text-red-600">{attestation.verificationError}</p>
+          )}
         </div>
         
         <button
           onClick={onUnlink}
           disabled={isDeleting}
-          className="shrink-0 p-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 
-                   rounded-lg transition-colors disabled:opacity-50"
+          className={`shrink-0 p-2 rounded-lg transition-colors disabled:opacity-50 ${
+            isValid 
+              ? 'text-zinc-400 hover:text-red-600 hover:bg-red-50' 
+              : 'text-red-400 hover:text-red-600 hover:bg-red-100'
+          }`}
           title="Unlink wallet"
         >
           {isDeleting ? (
@@ -338,7 +384,7 @@ function CopyButton({
   return (
     <button
       onClick={onCopy}
-      className="p-1 rounded hover:bg-zinc-100 transition-colors shrink-0"
+      className="p-1 rounded hover:bg-white/50 transition-colors shrink-0"
       title={copied ? 'Copied!' : `Copy ${value.slice(0, 20)}...`}
     >
       {copied ? (
