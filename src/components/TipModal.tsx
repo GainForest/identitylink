@@ -424,10 +424,13 @@ export function CoffeeButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       title="Buy them a coffee"
-      className="p-1 rounded hover:bg-emerald-100 transition-colors group"
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 
+                 border border-amber-200 hover:bg-amber-100 hover:border-amber-300 
+                 transition-all group"
     >
-      <span className="text-sm opacity-60 group-hover:opacity-100 transition-opacity">
-        &#9749;
+      <span className="text-xs">&#9749;</span>
+      <span className="text-[10px] font-medium text-amber-700 group-hover:text-amber-800">
+        Tip
       </span>
     </button>
   )
