@@ -108,6 +108,28 @@ export async function GET(
     // Verify each attestation
     const verifiedAttestations: VerifiedAttestation[] = await Promise.all(
       attestations.map(async (attestation) => {
+        // Check 1: message.did must match the DID we're looking up
+        // This prevents copying someone else's attestation to your PDS
+        if (attestation.message.did !== did) {
+          return {
+            ...attestation,
+            verified: false,
+            verifiedSignatureType: attestation.signatureType,
+            verificationError: `DID mismatch: message claims ${attestation.message.did} but record is in ${did}`,
+          }
+        }
+
+        // Check 2: message.evmAddress must match attestation.address
+        // This ensures internal consistency of the record
+        if (attestation.message.evmAddress.toLowerCase() !== attestation.address.toLowerCase()) {
+          return {
+            ...attestation,
+            verified: false,
+            verifiedSignatureType: attestation.signatureType,
+            verificationError: `Address mismatch: message claims ${attestation.message.evmAddress} but record says ${attestation.address}`,
+          }
+        }
+
         const client = clients[attestation.chainId as keyof typeof clients]
 
         if (!client) {

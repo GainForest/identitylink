@@ -20,13 +20,21 @@ const garamond = EB_Garamond({
 
 export const metadata: Metadata = {
   title: 'Identity Link',
-    description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
+  description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
   metadataBase: new URL('https://link.piss.beauty'),
   openGraph: {
     title: 'Identity Link',
-  description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
+    description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
     url: 'https://link.piss.beauty',
     siteName: 'Identity Link',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 2800,
+        height: 1800,
+        alt: 'Identity Link — Bridge ATProto and Ethereum identities',
+      },
+    ],
     locale: 'en_US',
     type: 'website',
   },
@@ -34,6 +42,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Identity Link',
     description: 'Link your ATProto DID to your Ethereum wallet.',
+    images: ['/og-image.jpg'],
+    creator: '@gainforest',
   },
 }
 
