@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getChainName, getExplorerUrl, CHAIN_COLORS, sortByChainId, type SupportedChainId } from '@/lib/chains'
 import { ChainIcon } from '@/components/ChainIcons'
+import { TipModal, CoffeeButton } from '@/components/TipModal'
 import type { SignatureType } from '@/lib/attestation'
 
 interface VerifiedAttestation {
@@ -47,6 +48,7 @@ export default function VerifyIdentifierPage() {
   const [error, setError] = useState<string | null>(null)
   const [input, setInput] = useState('')
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [isTipModalOpen, setIsTipModalOpen] = useState(false)
 
   useEffect(() => {
     if (!identifier) return
@@ -220,12 +222,15 @@ export default function VerifyIdentifierPage() {
                 {result.displayName || result.handle || result.did.slice(0, 20) + '...'}
               </span>
               {result.attestations.some(a => a.verified) && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-medium">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                  Verified
-                </span>
+                <>
+                  <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-medium">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    Verified
+                  </span>
+                  <CoffeeButton onClick={() => setIsTipModalOpen(true)} />
+                </>
               )}
             </div>
           </div>
@@ -294,6 +299,13 @@ export default function VerifyIdentifierPage() {
           </Link>
         </div>
       </div>
+
+      {/* Tip Modal */}
+      <TipModal
+        isOpen={isTipModalOpen}
+        onClose={() => setIsTipModalOpen(false)}
+        recipientName={result.displayName || result.handle}
+      />
     </div>
   )
 }
