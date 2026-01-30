@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { useAccount, useDisconnect } from 'wagmi'
+import { useAccount, useDisconnect, useAccountEffect } from 'wagmi'
 import { useAuth } from '@/lib/auth'
 import { getChainName, getExplorerUrl, sortByChainId, CHAIN_COLORS, type SupportedChainId } from '@/lib/chains'
 import { ChainIcon } from '@/components/ChainIcons'
@@ -23,10 +23,40 @@ export default function LinkPage() {
   const [manualStep, setManualStep] = useState<Step | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [hasCheckedExisting, setHasCheckedExisting] = useState(false)
+  const previousAddressRef = useRef<string | undefined>(undefined)
   
   const { session, isAuthenticated, isLoading: authLoading } = useAuth()
   const { address, chain, isConnected } = useAccount()
   const { disconnect } = useDisconnect()
+  
+  // Handle account changes - when user switches wallet in extension
+  useAccountEffect({
+    onConnect({ address: newAddress }) {
+      // If we had a previous address and it changed, go back to review step
+      if (previousAddressRef.current && previousAddressRef.current !== newAddress) {
+        // Reset to review step to re-verify the new wallet
+        if (manualStep === 'success') {
+          setManualStep('review')
+        }
+      }
+      previousAddressRef.current = newAddress
+    },
+    onDisconnect() {
+      previousAddressRef.current = undefined
+      // If we were in success state, stay there (they already linked)
+      // Otherwise go back to wallet step
+      if (manualStep !== 'success') {
+        setManualStep('wallet')
+      }
+    },
+  })
+  
+  // Track address changes for connected state
+  useEffect(() => {
+    if (address) {
+      previousAddressRef.current = address
+    }
+  }, [address])
 
   // Check for existing linked wallets on mount
   useEffect(() => {

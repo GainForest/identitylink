@@ -10,15 +10,15 @@ export function WagmiProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
-        // Wallet connection state doesn't need frequent refetching
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        // Keep wallet connection state fresh for reactivity
+        staleTime: 0, // Always refetch to catch account changes
         retry: 1,
       },
     },
   }))
 
   return (
-    <WagmiProviderBase config={wagmiConfig}>
+    <WagmiProviderBase config={wagmiConfig} reconnectOnMount>
       <QueryClientProvider client={queryClient}>
         {children}
       </QueryClientProvider>

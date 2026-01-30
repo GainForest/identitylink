@@ -25,12 +25,17 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
   const [showTechnical, setShowTechnical] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
 
-  // Check if this wallet+chain is already linked
+  // Check if this wallet+chain is already linked - re-check when address/chain changes
   useEffect(() => {
     if (!session?.did || !address) {
       setIsChecking(false)
       return
     }
+
+    // Reset state when address/chain changes
+    setIsChecking(true)
+    setStatus('idle')
+    setError(null)
 
     const checkExisting = async () => {
       try {
