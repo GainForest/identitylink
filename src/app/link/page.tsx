@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import { useAccount, useDisconnect } from 'wagmi'
 import { useAuth } from '@/lib/auth'
@@ -21,10 +21,41 @@ export default function LinkPage() {
   const [linkedWallets, setLinkedWallets] = useState<LinkedWallet[]>([])
   const [manualStep, setManualStep] = useState<Step | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [hasCheckedExisting, setHasCheckedExisting] = useState(false)
   
   const { session, isAuthenticated, isLoading: authLoading } = useAuth()
   const { address, chain, isConnected } = useAccount()
   const { disconnect } = useDisconnect()
+
+  // Check for existing linked wallets on mount
+  useEffect(() => {
+    if (!session?.did || hasCheckedExisting) return
+
+    const checkExisting = async () => {
+      try {
+        const res = await fetch(`/api/verify/${encodeURIComponent(session.did)}`)
+        if (res.ok) {
+          const data = await res.json()
+          if (data.attestations && data.attestations.length > 0) {
+            // Convert to LinkedWallet format
+            const wallets: LinkedWallet[] = data.attestations.map((a: { address: string; chainId: number; rkey: string }) => ({
+              address: a.address,
+              chainId: a.chainId,
+              uri: `at://${session.did}/org.impactindexer.link.attestation/${a.rkey}`,
+            }))
+            setLinkedWallets(wallets)
+            setManualStep('success')
+          }
+        }
+      } catch {
+        // Silently fail - just proceed with normal flow
+      } finally {
+        setHasCheckedExisting(true)
+      }
+    }
+
+    checkExisting()
+  }, [session?.did, hasCheckedExisting])
 
   // Determine current step based on state
   const currentStep: Step = (() => {
@@ -58,7 +89,7 @@ export default function LinkPage() {
   }, [])
 
   // Loading state
-  if (authLoading) {
+  if (authLoading || (isAuthenticated && !hasCheckedExisting)) {
     return (
       <div className="pt-16 sm:pt-24 pb-16 flex flex-col items-center">
         <div className="w-8 h-8 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
