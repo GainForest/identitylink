@@ -7,6 +7,25 @@ import {
 } from './attestation'
 
 /**
+ * Resolve the PDS endpoint for a given DID from the PLC directory.
+ */
+async function resolvePdsEndpoint(did: string): Promise<string | null> {
+  try {
+    const plcUrl = `https://plc.directory/${encodeURIComponent(did)}`
+    const res = await fetch(plcUrl)
+    if (!res.ok) return null
+    
+    const doc = await res.json()
+    const pdsService = doc.service?.find(
+      (s: { type: string }) => s.type === 'AtprotoPersonalDataServer'
+    )
+    return pdsService?.serviceEndpoint || null
+  } catch {
+    return null
+  }
+}
+
+/**
  * Store an attestation in the user's ATProto PDS.
  * 
  * The attestation is stored as a record in the user's repository
@@ -60,12 +79,20 @@ export interface AttestationWithKey extends StoredAttestation {
 
 /**
  * Get all attestations for a given DID from their PDS.
+ * Resolves the user's actual PDS endpoint from the PLC directory.
  */
 export async function getAttestations(
   did: string
 ): Promise<AttestationWithKey[]> {
-  // Create an unauthenticated agent for public reads
-  const agent = new Agent({ service: 'https://bsky.social' })
+  // Resolve the user's actual PDS endpoint
+  const pdsEndpoint = await resolvePdsEndpoint(did)
+  if (!pdsEndpoint) {
+    console.warn('Could not resolve PDS for DID:', did)
+    return []
+  }
+
+  // Create an unauthenticated agent pointing to the user's PDS
+  const agent = new Agent({ service: pdsEndpoint })
 
   try {
     const response = await agent.com.atproto.repo.listRecords({
@@ -91,12 +118,19 @@ export async function getAttestations(
 
 /**
  * Get a specific attestation by DID and record key.
+ * Resolves the user's actual PDS endpoint from the PLC directory.
  */
 export async function getAttestation(
   did: string,
   rkey: string
 ): Promise<StoredAttestation | null> {
-  const agent = new Agent({ service: 'https://bsky.social' })
+  // Resolve the user's actual PDS endpoint
+  const pdsEndpoint = await resolvePdsEndpoint(did)
+  if (!pdsEndpoint) {
+    return null
+  }
+
+  const agent = new Agent({ service: pdsEndpoint })
 
   try {
     const response = await agent.com.atproto.repo.getRecord({
