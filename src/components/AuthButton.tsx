@@ -184,7 +184,7 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
               Sign in with ATProto
             </h2>
             <p className="text-sm text-zinc-400 mb-5">
-              Enter your Bluesky handle to connect.
+              Enter your handle to connect.
             </p>
 
             <form onSubmit={handleLogin}>

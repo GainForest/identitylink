@@ -117,14 +117,14 @@ export default function ManagePage() {
             Sign In Required
           </h1>
           <p className="text-zinc-500 max-w-sm">
-            Sign in with your Bluesky account to manage your linked wallets.
+            Sign in with your ATProto account to manage your linked wallets.
           </p>
         </div>
         <Link
           href="/link"
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
         >
-          Sign In with Bluesky
+          Sign In
         </Link>
       </div>
     )

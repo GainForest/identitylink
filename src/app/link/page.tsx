@@ -240,7 +240,7 @@ export default function LinkPage() {
             Link Identity
           </h2>
           <p className="text-sm text-zinc-400 mt-1">
-            Connect your Bluesky identity to an Ethereum wallet
+            Connect your ATProto DID to an Ethereum wallet
           </p>
         </div>
 

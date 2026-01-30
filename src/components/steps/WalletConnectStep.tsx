@@ -71,7 +71,7 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
               <p className="font-medium text-zinc-800">
                 @{session?.handle || session?.did}
               </p>
-              <p className="text-xs text-zinc-500">Bluesky Identity</p>
+              <p className="text-xs text-zinc-500">ATProto Identity</p>
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@ export function WalletConnectStep({ onContinue }: WalletConnectStepProps) {
           Connect Your Wallet
         </h1>
         <p className="text-zinc-500">
-          Choose the wallet you want to link to your Bluesky identity.
+          Choose the wallet you want to link to your ATProto identity.
         </p>
       </div>
 

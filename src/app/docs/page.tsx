@@ -62,7 +62,7 @@ function OverviewTab() {
       <section>
         <h2 className="text-lg font-semibold text-zinc-900 mb-3">What is ATProto-EVM Link?</h2>
         <p className="text-zinc-600 leading-relaxed">
-          ATProto-EVM Link creates verifiable, cryptographic proofs that connect your Bluesky 
+          ATProto-EVM Link creates verifiable, cryptographic proofs that connect your ATProto 
           (ATProto) identity to Ethereum wallet addresses. These attestations enable:
         </p>
         <ul className="mt-3 space-y-2 text-zinc-600">
@@ -112,7 +112,7 @@ function OverviewTab() {
         <ol className="space-y-3 text-zinc-600">
           <li className="flex items-start gap-3">
             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium shrink-0">1</span>
-            <span>Sign in with your Bluesky account using OAuth</span>
+            <span>Sign in with your ATProto account using OAuth</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium shrink-0">2</span>
@@ -152,7 +152,7 @@ function HowItWorksTab() {
           We use ATProto OAuth 2.0 with DPoP (Demonstrating Proof of Possession) for secure authentication:
         </p>
         <div className="bg-zinc-50 rounded-lg p-4 font-mono text-xs overflow-x-auto">
-          <pre className="text-zinc-600">{`User          App               Bluesky PDS
+          <pre className="text-zinc-600">{`User          App               ATProto PDS
   │            │                      │
   ├─ Sign In ─►│                      │
   │            ├─ OAuth request ─────►│

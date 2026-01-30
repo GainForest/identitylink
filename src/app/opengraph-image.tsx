@@ -6,6 +6,6 @@ export const runtime = 'edge'
 export default async function OGImage() {
   return generateOGImage({
     title: 'IdentityLink',
-    subtitle: 'Link your Bluesky identity to Ethereum wallets with cryptographic proof',
+    subtitle: 'Link your ATProto DID to Ethereum wallets with cryptographic proof',
   })
 }

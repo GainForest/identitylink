@@ -165,7 +165,7 @@ export async function deleteAttestation(
 }
 
 /**
- * Resolve a Bluesky handle to a DID.
+ * Resolve an ATProto handle to a DID.
  */
 export async function resolveHandleToDid(handle: string): Promise<string | null> {
   const agent = new Agent({ service: 'https://bsky.social' })

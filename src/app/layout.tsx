@@ -20,11 +20,11 @@ const garamond = EB_Garamond({
 
 export const metadata: Metadata = {
   title: 'Identity Link',
-  description: 'Link your Bluesky identity to your Ethereum wallet. Create verifiable connections between your social identity and blockchain address.',
+    description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
   metadataBase: new URL('https://link.piss.beauty'),
   openGraph: {
     title: 'Identity Link',
-    description: 'Link your Bluesky identity to your Ethereum wallet. Create verifiable connections between your social identity and blockchain address.',
+  description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
     url: 'https://link.piss.beauty',
     siteName: 'Identity Link',
     locale: 'en_US',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Identity Link',
-    description: 'Link your Bluesky identity to your Ethereum wallet.',
+    description: 'Link your ATProto DID to your Ethereum wallet.',
   },
 }
 

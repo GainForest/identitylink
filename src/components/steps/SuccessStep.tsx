@@ -50,7 +50,7 @@ export function SuccessStep({ attestationUri }: SuccessStepProps) {
           Identity Successfully Linked!
         </h1>
         <p className="text-zinc-500">
-          Your Bluesky identity is now verifiably connected to your Ethereum wallet.
+          Your ATProto identity is now verifiably connected to your Ethereum wallet.
         </p>
       </div>
 

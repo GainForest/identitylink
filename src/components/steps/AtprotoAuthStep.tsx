@@ -24,7 +24,7 @@ export function AtprotoAuthStep() {
     <div className="space-y-6">
       <div>
         <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 mb-2">
-          Sign in with Bluesky
+          Sign in with ATProto
         </h1>
         <p className="text-zinc-500">
           First, connect your ATProto identity to prove who you are.
@@ -34,7 +34,7 @@ export function AtprotoAuthStep() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="handle" className="block text-sm font-medium text-zinc-700 mb-1.5">
-            Your Bluesky Handle
+            Your Handle
           </label>
           <input
             id="handle"
@@ -76,7 +76,7 @@ export function AtprotoAuthStep() {
               Connecting...
             </span>
           ) : (
-            'Continue with Bluesky'
+            'Continue'
           )}
         </button>
       </form>

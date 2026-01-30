@@ -58,7 +58,7 @@ export default function VerifyPage() {
           Verify Identity
         </h1>
         <p className="text-zinc-500 mt-2">
-          Check if a Bluesky user has linked their wallet
+          Check if an ATProto user has linked their wallet
         </p>
       </div>
 

@@ -32,7 +32,7 @@ export default function LandingPage() {
           Bridge Your Identities
         </h1>
         <p className="text-zinc-500 mt-4 text-base leading-relaxed">
-          Link your Bluesky identity to your Ethereum wallet with cryptographic proof.
+          Link your ATProto DID to your Ethereum wallet with cryptographic proof.
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export default function LandingPage() {
           How it works
         </h2>
         <div className="grid gap-6 sm:grid-cols-2">
-          <Step number={1} title="Sign in" description="Authenticate with your Bluesky handle" />
+          <Step number={1} title="Sign in" description="Authenticate with your ATProto handle" />
           <Step number={2} title="Connect" description="Link your Ethereum wallet" />
           <Step number={3} title="Sign" description="Create a cryptographic attestation" />
           <Step number={4} title="Share" description="Anyone can verify the link" />

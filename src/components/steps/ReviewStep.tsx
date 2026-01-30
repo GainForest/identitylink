@@ -92,7 +92,7 @@ export function ReviewStep({ onSuccess, onBack }: ReviewStepProps) {
           <div className="flex items-center gap-3">
             <span className="text-2xl">🦋</span>
             <div>
-              <p className="text-sm text-zinc-500">Bluesky Identity</p>
+              <p className="text-sm text-zinc-500">ATProto Identity</p>
               <p className="font-medium text-zinc-800">@{session?.handle}</p>
               <p className="text-xs text-zinc-400 font-mono mt-0.5">
                 {session?.did.slice(0, 30)}...
