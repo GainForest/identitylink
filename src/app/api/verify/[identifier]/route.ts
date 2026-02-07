@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
 import { base, optimism, mainnet, arbitrum } from 'wagmi/chains'
-import { getAttestations, resolveHandleToDid } from '@/lib/pds'
+import { getAttestations, getSocialLinks, resolveHandleToDid } from '@/lib/pds'
 import { verifyAttestation } from '@/lib/verify'
 import type { StoredAttestation, SignatureType } from '@/lib/attestation'
 
@@ -100,8 +100,26 @@ export async function GET(
       // Silently continue without PDS info
     }
 
-    // Fetch attestations from PDS
-    const attestations = await getAttestations(did)
+    // Fetch attestations and social links from PDS in parallel
+    const [attestations, socialLinks] = await Promise.all([
+      getAttestations(did),
+      getSocialLinks(did),
+    ])
+
+    if (attestations.length === 0 && socialLinks.length === 0) {
+      return NextResponse.json({
+        did,
+        handle,
+        displayName,
+        avatar,
+        pds,
+        attestations: [],
+        socialLinks: [],
+        verified: true,
+        verifiedAt: new Date().toISOString(),
+        message: 'No attestations found for this identity',
+      }, { headers: corsHeaders })
+    }
 
     if (attestations.length === 0) {
       return NextResponse.json({
@@ -111,9 +129,9 @@ export async function GET(
         avatar,
         pds,
         attestations: [],
+        socialLinks,
         verified: true,
         verifiedAt: new Date().toISOString(),
-        message: 'No attestations found for this identity',
       }, { headers: corsHeaders })
     }
 
@@ -184,6 +202,7 @@ export async function GET(
       avatar,
       pds,
       attestations: verifiedAttestations,
+      socialLinks,
       verified: allValid,
       verifiedAt: new Date().toISOString(),
     }, { headers: corsHeaders })

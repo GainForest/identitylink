@@ -10,6 +10,7 @@ const navLinks = [
   { href: '/link', label: 'Link' },
   { href: '/verify', label: 'Verify' },
   { href: '/manage', label: 'Manage' },
+  { href: '/socials', label: 'Socials' },
   { href: '/docs', label: 'Docs' },
 ]
 

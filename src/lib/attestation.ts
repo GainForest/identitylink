@@ -119,3 +119,40 @@ export function storageFormatToMessage(stored: StoredAttestation['message']): At
     nonce: BigInt(stored.nonce),
   }
 }
+
+/**
+ * ATProto collection NSID for social profile links.
+ * Lexicon: org.impactindexer.link.social
+ */
+export const SOCIAL_COLLECTION = 'org.impactindexer.link.social'
+
+/**
+ * Supported social platforms.
+ */
+export type SocialPlatform =
+  | 'twitter'
+  | 'github'
+  | 'telegram'
+  | 'discord'
+  | 'linkedin'
+  | 'website'
+
+export const SOCIAL_PLATFORMS: { id: SocialPlatform; label: string; placeholder: string; urlPrefix?: string }[] = [
+  { id: 'twitter', label: 'X / Twitter', placeholder: 'username', urlPrefix: 'https://x.com/' },
+  { id: 'github', label: 'GitHub', placeholder: 'username', urlPrefix: 'https://github.com/' },
+  { id: 'telegram', label: 'Telegram', placeholder: 'username', urlPrefix: 'https://t.me/' },
+  { id: 'discord', label: 'Discord', placeholder: 'username#0000 or username' },
+  { id: 'linkedin', label: 'LinkedIn', placeholder: 'username', urlPrefix: 'https://linkedin.com/in/' },
+  { id: 'website', label: 'Website', placeholder: 'https://example.com' },
+]
+
+/**
+ * Stored social link record format for PDS.
+ */
+export interface StoredSocialLink {
+  $type: typeof SOCIAL_COLLECTION
+  platform: SocialPlatform
+  handle: string
+  url?: string
+  createdAt: string
+}

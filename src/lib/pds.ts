@@ -2,8 +2,11 @@ import { Agent } from '@atproto/api'
 import type { Hex } from 'viem'
 import {
   ATTESTATION_COLLECTION,
+  SOCIAL_COLLECTION,
   type StoredAttestation,
+  type StoredSocialLink,
   type SignatureType,
+  type SocialPlatform,
 } from './attestation'
 
 /**
@@ -176,4 +179,103 @@ export async function resolveHandleToDid(handle: string): Promise<string | null>
   } catch {
     return null
   }
+}
+
+// ─── Social Links ───────────────────────────────────────────────────────────
+
+export interface SocialLinkWithKey extends StoredSocialLink {
+  rkey: string
+}
+
+/**
+ * Store a social link in the user's ATProto PDS.
+ */
+export async function storeSocialLink(
+  agent: Agent,
+  did: string,
+  params: {
+    platform: SocialPlatform
+    handle: string
+    url?: string
+  }
+): Promise<{ uri: string; cid: string }> {
+  if (!did) {
+    throw new Error('DID is required')
+  }
+
+  const record: StoredSocialLink = {
+    $type: SOCIAL_COLLECTION,
+    platform: params.platform,
+    handle: params.handle,
+    url: params.url,
+    createdAt: new Date().toISOString(),
+  }
+
+  // One record per platform
+  const rkey = params.platform
+
+  const response = await agent.com.atproto.repo.putRecord({
+    repo: did,
+    collection: SOCIAL_COLLECTION,
+    rkey,
+    record: record as unknown as Record<string, unknown>,
+  })
+
+  return {
+    uri: response.data.uri,
+    cid: response.data.cid,
+  }
+}
+
+/**
+ * Get all social links for a given DID from their PDS.
+ */
+export async function getSocialLinks(
+  did: string
+): Promise<SocialLinkWithKey[]> {
+  const pdsEndpoint = await resolvePdsEndpoint(did)
+  if (!pdsEndpoint) {
+    console.warn('Could not resolve PDS for DID:', did)
+    return []
+  }
+
+  const agent = new Agent({ service: pdsEndpoint })
+
+  try {
+    const response = await agent.com.atproto.repo.listRecords({
+      repo: did,
+      collection: SOCIAL_COLLECTION,
+    })
+
+    return response.data.records.map(r => {
+      const uri = r.uri
+      const rkey = uri.split('/').pop() || ''
+      return {
+        ...(r.value as unknown as StoredSocialLink),
+        rkey,
+      }
+    })
+  } catch (error) {
+    console.warn('Failed to fetch social links:', error)
+    return []
+  }
+}
+
+/**
+ * Delete a social link from the user's PDS.
+ */
+export async function deleteSocialLink(
+  agent: Agent,
+  did: string,
+  rkey: string
+): Promise<void> {
+  if (!did) {
+    throw new Error('DID is required')
+  }
+
+  await agent.com.atproto.repo.deleteRecord({
+    repo: did,
+    collection: SOCIAL_COLLECTION,
+    rkey,
+  })
 }
