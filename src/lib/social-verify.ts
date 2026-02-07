@@ -66,6 +66,8 @@ async function fetchProfileBio(
       return fetchGitHubBio(handle)
     case 'twitter':
       return fetchTwitterBio(handle)
+    case 'instagram':
+      return fetchInstagramBio(handle)
     case 'website':
       return fetchWebsiteContent(handle)
     default:
@@ -136,6 +138,44 @@ async function fetchTwitterBio(username: string): Promise<string | null> {
   }
 
   return null
+}
+
+/**
+ * Fetch Instagram bio via profile page meta tags.
+ * Instagram may block server-side requests; returns null if unavailable.
+ */
+async function fetchInstagramBio(username: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://www.instagram.com/${encodeURIComponent(username)}/`,
+      {
+        headers: {
+          Accept: 'text/html',
+          'User-Agent': 'Mozilla/5.0 (compatible; IdentityLink/1.0)',
+        },
+        signal: AbortSignal.timeout(10000),
+        next: { revalidate: 60 },
+      }
+    )
+    if (!res.ok) return null
+    const html = await res.text()
+
+    // Try og:description meta tag which typically contains the bio
+    const ogMatch = html.match(
+      /<meta\s+property="og:description"\s+content="([^"]*?)"\s*\/?>/i
+    )
+    if (ogMatch) return ogMatch[1]
+
+    // Fallback: try description meta tag
+    const descMatch = html.match(
+      /<meta\s+name="description"\s+content="([^"]*?)"\s*\/?>/i
+    )
+    if (descMatch) return descMatch[1]
+
+    return null
+  } catch {
+    return null
+  }
 }
 
 /**

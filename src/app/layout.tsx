@@ -68,13 +68,13 @@ export default function RootLayout({
               <Header />
 
               {/* Body */}
-              <main className="relative flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pb-8">
+              <main className="relative flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 pb-8">
                 {children}
               </main>
 
               {/* Footer */}
               <footer className="relative py-6 mt-auto">
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 flex items-center justify-center gap-2">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-center gap-2">
                   <Image
                     src="/hypercerts_logo.png"
                     alt="Hypercerts"

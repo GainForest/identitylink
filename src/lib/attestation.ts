@@ -132,6 +132,7 @@ export const SOCIAL_COLLECTION = 'org.impactindexer.link.social'
 export type SocialPlatform =
   | 'twitter'
   | 'github'
+  | 'instagram'
   | 'telegram'
   | 'discord'
   | 'linkedin'
@@ -140,6 +141,7 @@ export type SocialPlatform =
 export const SOCIAL_PLATFORMS: { id: SocialPlatform; label: string; placeholder: string; urlPrefix?: string }[] = [
   { id: 'twitter', label: 'X / Twitter', placeholder: 'username', urlPrefix: 'https://x.com/' },
   { id: 'github', label: 'GitHub', placeholder: 'username', urlPrefix: 'https://github.com/' },
+  { id: 'instagram', label: 'Instagram', placeholder: 'username', urlPrefix: 'https://instagram.com/' },
   { id: 'telegram', label: 'Telegram', placeholder: 'username', urlPrefix: 'https://t.me/' },
   { id: 'discord', label: 'Discord', placeholder: 'username#0000 or username' },
   { id: 'linkedin', label: 'LinkedIn', placeholder: 'username', urlPrefix: 'https://linkedin.com/in/' },
@@ -162,4 +164,4 @@ export interface StoredSocialLink {
 /**
  * Platforms that support automatic bio verification.
  */
-export const VERIFIABLE_PLATFORMS: SocialPlatform[] = ['github', 'twitter', 'website']
+export const VERIFIABLE_PLATFORMS: SocialPlatform[] = ['github', 'twitter', 'instagram', 'website']
