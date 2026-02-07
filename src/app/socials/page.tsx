@@ -3,12 +3,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
-import { SOCIAL_PLATFORMS, type SocialPlatform } from '@/lib/attestation'
+import { SOCIAL_PLATFORMS, VERIFIABLE_PLATFORMS, type SocialPlatform } from '@/lib/attestation'
 
 interface SocialLink {
   platform: SocialPlatform
   handle: string
   url?: string
+  verified?: boolean
+  verifiedAt?: string
   createdAt: string
   rkey: string
 }
@@ -19,6 +21,9 @@ export default function SocialsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [deletingKey, setDeletingKey] = useState<string | null>(null)
+  const [verifyingKey, setVerifyingKey] = useState<string | null>(null)
+  const [verifyError, setVerifyError] = useState<string | null>(null)
+  const [verifySuccess, setVerifySuccess] = useState<string | null>(null)
 
   // Add form state
   const [isAdding, setIsAdding] = useState(false)
@@ -118,6 +123,41 @@ export default function SocialsPage() {
       setError(err instanceof Error ? err.message : 'Failed to remove social link')
     } finally {
       setDeletingKey(null)
+    }
+  }
+
+  const handleVerify = async (link: SocialLink) => {
+    if (!session?.did) return
+
+    try {
+      setVerifyingKey(link.rkey)
+      setVerifyError(null)
+      setVerifySuccess(null)
+
+      const res = await fetch('/api/socials/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: link.platform,
+          handle: link.handle,
+          url: link.url,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (data.verified) {
+        setVerifySuccess(link.rkey)
+        setTimeout(() => setVerifySuccess(null), 3000)
+        // Refresh to get updated verified status
+        await fetchSocialLinks()
+      } else {
+        setVerifyError(data.error || 'Verification failed')
+      }
+    } catch (err) {
+      setVerifyError(err instanceof Error ? err.message : 'Verification failed')
+    } finally {
+      setVerifyingKey(null)
     }
   }
 
@@ -226,57 +266,167 @@ export default function SocialsPage() {
                 </h3>
                 {socialLinks.map(link => {
                   const config = SOCIAL_PLATFORMS.find(p => p.id === link.platform)
+                  const isVerifiable = VERIFIABLE_PLATFORMS.includes(link.platform)
+                  const isVerified = link.verified === true
+                  const isVerifying = verifyingKey === link.rkey
+                  const justVerified = verifySuccess === link.rkey
+
                   return (
                     <div
                       key={link.rkey}
-                      className="flex items-center justify-between p-4 bg-emerald-50/50 border border-emerald-200 rounded-xl"
+                      className={`rounded-xl border ${
+                        isVerified
+                          ? 'bg-emerald-50/50 border-emerald-200'
+                          : 'bg-zinc-50 border-zinc-200'
+                      }`}
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                          <PlatformIcon platform={link.platform} className="w-4 h-4 text-emerald-700" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-zinc-800">
-                            {config?.label || link.platform}
-                          </p>
-                          <div className="flex items-center gap-1">
-                            <p className="text-xs text-zinc-500 truncate">{link.handle}</p>
-                            {link.url && (
-                              <a
-                                href={link.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="p-0.5 rounded hover:bg-emerald-100 transition-colors shrink-0"
-                                title="Open profile"
-                              >
-                                <svg className="w-3 h-3 text-zinc-400 hover:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                                </svg>
-                              </a>
-                            )}
+                      <div className="flex items-center justify-between p-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
+                            isVerified ? 'bg-emerald-100' : 'bg-zinc-100'
+                          }`}>
+                            <PlatformIcon platform={link.platform} className={`w-4 h-4 ${
+                              isVerified ? 'text-emerald-700' : 'text-zinc-500'
+                            }`} />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium text-zinc-800">
+                                {config?.label || link.platform}
+                              </p>
+                              {isVerified ? (
+                                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-medium">
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                  </svg>
+                                  Verified
+                                </span>
+                              ) : (
+                                <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-medium">
+                                  Unverified
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <p className="text-xs text-zinc-500 truncate">{link.handle}</p>
+                              {link.url && (
+                                <a
+                                  href={link.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-0.5 rounded hover:bg-emerald-100 transition-colors shrink-0"
+                                  title="Open profile"
+                                >
+                                  <svg className="w-3 h-3 text-zinc-400 hover:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                  </svg>
+                                </a>
+                              )}
+                            </div>
                           </div>
                         </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          {/* Verify button */}
+                          {isVerifiable && !isVerified && (
+                            <button
+                              onClick={() => handleVerify(link)}
+                              disabled={isVerifying}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-100
+                                         rounded-lg hover:bg-emerald-200 transition-colors disabled:opacity-50"
+                              title="Verify by checking your bio"
+                            >
+                              {isVerifying ? (
+                                <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                </svg>
+                              ) : (
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              )}
+                              Verify
+                            </button>
+                          )}
+                          {/* Re-verify button for already verified */}
+                          {isVerifiable && isVerified && !justVerified && (
+                            <button
+                              onClick={() => handleVerify(link)}
+                              disabled={isVerifying}
+                              className="p-1.5 text-zinc-400 hover:text-emerald-600 rounded transition-colors disabled:opacity-50"
+                              title="Re-verify"
+                            >
+                              {isVerifying ? (
+                                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                </svg>
+                              ) : (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                                </svg>
+                              )}
+                            </button>
+                          )}
+                          {justVerified && (
+                            <span className="text-xs text-emerald-600 font-medium px-2">Verified!</span>
+                          )}
+                          {/* Delete button */}
+                          <button
+                            onClick={() => handleDelete(link.rkey)}
+                            disabled={deletingKey === link.rkey}
+                            className="p-1.5 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50 shrink-0"
+                            title="Remove"
+                          >
+                            {deletingKey === link.rkey ? (
+                              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                              </svg>
+                            ) : (
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            )}
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => handleDelete(link.rkey)}
-                        disabled={deletingKey === link.rkey}
-                        className="p-1.5 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50 shrink-0"
-                        title="Remove"
-                      >
-                        {deletingKey === link.rkey ? (
-                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        )}
-                      </button>
+
+                      {/* Verification instructions for unverified verifiable links */}
+                      {isVerifiable && !isVerified && (
+                        <div className="px-4 pb-4 -mt-1">
+                          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p className="text-xs text-amber-800">
+                              To verify, add <span className="font-mono font-medium bg-amber-100 px-1 rounded">
+                                {session.handle || session.did}
+                              </span> to your {config?.label || link.platform} {link.platform === 'website' ? 'page content' : 'bio'}, then click Verify.
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )
                 })}
+              </div>
+            )}
+
+            {/* Verify error */}
+            {verifyError && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <div className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-red-700">{verifyError}</p>
+                    <button
+                      onClick={() => setVerifyError(null)}
+                      className="text-xs text-red-500 hover:text-red-700 mt-1"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 

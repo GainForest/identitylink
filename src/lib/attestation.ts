@@ -154,5 +154,12 @@ export interface StoredSocialLink {
   platform: SocialPlatform
   handle: string
   url?: string
+  verified?: boolean
+  verifiedAt?: string
   createdAt: string
 }
+
+/**
+ * Platforms that support automatic bio verification.
+ */
+export const VERIFIABLE_PLATFORMS: SocialPlatform[] = ['github', 'twitter', 'website']

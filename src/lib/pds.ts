@@ -197,6 +197,8 @@ export async function storeSocialLink(
     platform: SocialPlatform
     handle: string
     url?: string
+    verified?: boolean
+    verifiedAt?: string
   }
 ): Promise<{ uri: string; cid: string }> {
   if (!did) {
@@ -208,6 +210,8 @@ export async function storeSocialLink(
     platform: params.platform,
     handle: params.handle,
     url: params.url,
+    verified: params.verified,
+    verifiedAt: params.verifiedAt,
     createdAt: new Date().toISOString(),
   }
 

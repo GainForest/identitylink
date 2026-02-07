@@ -32,6 +32,8 @@ interface SocialLink {
   platform: SocialPlatform
   handle: string
   url?: string
+  verified?: boolean
+  verifiedAt?: string
   createdAt: string
   rkey: string
 }
@@ -303,18 +305,41 @@ export default function VerifyIdentifierPage() {
             <div className="space-y-2">
               {result.socialLinks.map(link => {
                 const config = SOCIAL_PLATFORMS.find(p => p.id === link.platform)
+                const isVerified = link.verified === true
                 return (
                   <div
                     key={link.rkey}
-                    className="flex items-center gap-3 p-3 bg-zinc-50 border border-zinc-200 rounded-xl"
+                    className={`flex items-center gap-3 p-3 rounded-xl border ${
+                      isVerified
+                        ? 'bg-emerald-50/50 border-emerald-200'
+                        : 'bg-zinc-50 border-zinc-200'
+                    }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
-                      <SocialPlatformIcon platform={link.platform} className="w-4 h-4 text-zinc-600" />
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                      isVerified ? 'bg-emerald-100' : 'bg-zinc-100'
+                    }`}>
+                      <SocialPlatformIcon platform={link.platform} className={`w-4 h-4 ${
+                        isVerified ? 'text-emerald-700' : 'text-zinc-600'
+                      }`} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-zinc-800">
-                        {config?.label || link.platform}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-zinc-800">
+                          {config?.label || link.platform}
+                        </p>
+                        {isVerified ? (
+                          <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-medium">
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                            </svg>
+                            Verified
+                          </span>
+                        ) : (
+                          <span className="px-1.5 py-0.5 bg-zinc-100 text-zinc-500 rounded text-[10px] font-medium">
+                            Unverified
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-zinc-500 truncate">{link.handle}</p>
                     </div>
                     {link.url && (

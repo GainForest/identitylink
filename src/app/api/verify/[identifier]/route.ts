@@ -3,6 +3,8 @@ import { createPublicClient, http } from 'viem'
 import { base, optimism, mainnet, arbitrum } from 'wagmi/chains'
 import { getAttestations, getSocialLinks, resolveHandleToDid } from '@/lib/pds'
 import { verifyAttestation } from '@/lib/verify'
+import { verifySocialBio } from '@/lib/social-verify'
+import { VERIFIABLE_PLATFORMS } from '@/lib/attestation'
 import type { StoredAttestation, SignatureType } from '@/lib/attestation'
 
 export const dynamic = 'force-dynamic'
@@ -106,6 +108,24 @@ export async function GET(
       getSocialLinks(did),
     ])
 
+    // Real-time verify social links by checking bios
+    const verifiedSocialLinks = await Promise.all(
+      socialLinks.map(async (link) => {
+        // For verifiable platforms, do a real-time bio check
+        if (VERIFIABLE_PLATFORMS.includes(link.platform) && handle) {
+          try {
+            const bioResult = await verifySocialBio(link.platform, link.handle, handle, did)
+            return { ...link, verified: bioResult.verified }
+          } catch {
+            // Fall back to stored status
+            return link
+          }
+        }
+        // For non-verifiable platforms, use stored status
+        return link
+      })
+    )
+
     if (attestations.length === 0 && socialLinks.length === 0) {
       return NextResponse.json({
         did,
@@ -129,7 +149,7 @@ export async function GET(
         avatar,
         pds,
         attestations: [],
-        socialLinks,
+        socialLinks: verifiedSocialLinks,
         verified: true,
         verifiedAt: new Date().toISOString(),
       }, { headers: corsHeaders })
@@ -202,7 +222,7 @@ export async function GET(
       avatar,
       pds,
       attestations: verifiedAttestations,
-      socialLinks,
+      socialLinks: verifiedSocialLinks,
       verified: allValid,
       verifiedAt: new Date().toISOString(),
     }, { headers: corsHeaders })
