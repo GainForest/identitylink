@@ -11,8 +11,8 @@ function ErrorBanner() {
   if (!error) return null
   
   return (
-    <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-lg">
-      <p className="text-sm text-red-700">
+    <div className="mb-6 p-4 bg-red-50 border border-red-100 dark:bg-red-950/30 dark:border-red-900/50 rounded-lg">
+      <p className="text-sm text-red-700 dark:text-red-400">
         <span className="font-medium">Authentication failed:</span> {error}
       </p>
     </div>
@@ -28,10 +28,10 @@ export default function LandingPage() {
       
       {/* Hero */}
       <div className="max-w-lg">
-        <h1 className="font-[family-name:var(--font-garamond)] text-3xl sm:text-4xl text-zinc-900 leading-tight">
+        <h1 className="font-[family-name:var(--font-garamond)] text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 leading-tight">
           Bridge Your Identities
         </h1>
-        <p className="text-zinc-500 mt-4 text-base leading-relaxed">
+        <p className="text-zinc-500 dark:text-zinc-400 mt-4 text-base leading-relaxed">
           Link your ATProto DID to your Ethereum wallet with cryptographic proof.
         </p>
       </div>
@@ -53,7 +53,9 @@ export default function LandingPage() {
           href="/verify"
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 
                      bg-white text-zinc-700 font-medium rounded-lg border border-zinc-200
-                     hover:bg-zinc-50 hover:border-zinc-300 transition-colors"
+                     hover:bg-zinc-50 hover:border-zinc-300 
+                     dark:bg-zinc-900 dark:text-zinc-300 dark:border-zinc-700 
+                     dark:hover:bg-zinc-800 dark:hover:border-zinc-600 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -64,7 +66,7 @@ export default function LandingPage() {
 
       {/* How it works */}
       <div className="mt-16">
-        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-6">
+        <h2 className="text-sm font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wide mb-6">
           How it works
         </h2>
         <div className="grid gap-6 sm:grid-cols-2">
@@ -77,7 +79,7 @@ export default function LandingPage() {
 
       {/* Features */}
       <div className="mt-16">
-        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-6">
+        <h2 className="text-sm font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wide mb-6">
           Features
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -94,13 +96,13 @@ export default function LandingPage() {
 function Step({ number, title, description }: { number: number; title: string; description: string }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium 
+      <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-medium 
                       flex items-center justify-center shrink-0 mt-0.5">
         {number}
       </div>
       <div>
-        <h3 className="font-medium text-zinc-800">{title}</h3>
-        <p className="text-sm text-zinc-500">{description}</p>
+        <h3 className="font-medium text-zinc-800 dark:text-zinc-200">{title}</h3>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
       </div>
     </div>
   )
@@ -113,8 +115,8 @@ function Feature({ title, description }: { title: string; description: string })
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
       </svg>
       <div>
-        <span className="text-sm text-zinc-700">{title}</span>
-        <span className="text-sm text-zinc-400"> — {description}</span>
+        <span className="text-sm text-zinc-700 dark:text-zinc-300">{title}</span>
+        <span className="text-sm text-zinc-400 dark:text-zinc-500"> — {description}</span>
       </div>
     </div>
   )
