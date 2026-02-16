@@ -54,10 +54,10 @@ export default function VerifyPage() {
     <div className="pt-16 sm:pt-24 pb-16 flex flex-col items-center">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900">
+        <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100">
           Verify Identity
         </h1>
-        <p className="text-zinc-500 mt-2">
+        <p className="text-zinc-500 dark:text-zinc-400 mt-2">
           Check if an ATProto user has linked their wallet
         </p>
       </div>
@@ -71,9 +71,9 @@ export default function VerifyPage() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Handle or DID"
-            className="flex-1 px-4 py-3 bg-white border border-zinc-200 rounded-lg
-                       text-sm text-zinc-800 placeholder-zinc-400
-                       focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100
+            className="flex-1 px-4 py-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg
+                       text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500
+                       focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30
                        transition-all"
           />
           <button
@@ -81,7 +81,7 @@ export default function VerifyPage() {
             disabled={isResolving || !input.trim()}
             className="px-5 py-3 bg-emerald-600 text-white font-medium rounded-lg
                        hover:bg-emerald-700 transition-colors
-                       disabled:bg-zinc-200 disabled:text-zinc-400 disabled:cursor-not-allowed"
+                       disabled:bg-zinc-200 dark:disabled:bg-zinc-700 disabled:text-zinc-400 dark:disabled:text-zinc-500 disabled:cursor-not-allowed"
           >
             {isResolving ? (
               <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -97,19 +97,19 @@ export default function VerifyPage() {
         </div>
 
         {error && (
-          <p className="text-sm text-red-500 mt-2 text-center">{error}</p>
+          <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-center">{error}</p>
         )}
       </div>
 
       {/* Examples */}
       <div className="mt-8 flex flex-wrap justify-center gap-2">
-        <span className="text-xs text-zinc-400">Try:</span>
+        <span className="text-xs text-zinc-400 dark:text-zinc-500">Try:</span>
         {['pfrazee.com', 'jay.bsky.team', 'emily.bsky.team'].map((handle) => (
           <button
             key={handle}
             onClick={() => setInput(handle)}
-            className="px-2.5 py-1 text-xs text-zinc-500 bg-zinc-100 rounded-full
-                       hover:bg-zinc-200 hover:text-zinc-700 transition-colors"
+            className="px-2.5 py-1 text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 rounded-full
+                       hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
           >
             @{handle}
           </button>
@@ -118,7 +118,7 @@ export default function VerifyPage() {
 
       {/* Info */}
       <div className="mt-12 max-w-sm text-center">
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-zinc-400 dark:text-zinc-500">
           Verification checks that the wallet signature is cryptographically valid 
           and stored in the user&apos;s ATProto repository.
         </p>

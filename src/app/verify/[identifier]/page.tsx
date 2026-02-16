@@ -102,8 +102,8 @@ export default function VerifyIdentifierPage() {
     return (
       <div className="pt-12 sm:pt-20 pb-16 flex flex-col items-center">
         <div className="flex flex-col items-center justify-center py-12">
-          <div className="w-12 h-12 rounded-full border-3 border-emerald-200 border-t-emerald-600 animate-spin mb-4" />
-          <p className="text-sm text-zinc-500">Verifying @{identifier}...</p>
+          <div className="w-12 h-12 rounded-full border-3 border-emerald-200 dark:border-emerald-900 border-t-emerald-600 dark:border-t-emerald-400 animate-spin mb-4" />
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">Verifying @{identifier}...</p>
         </div>
       </div>
     )
@@ -121,26 +121,26 @@ export default function VerifyIdentifierPage() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Handle or DID..."
-              className="flex-1 px-3 py-2 bg-white border border-zinc-200 rounded-lg
-                         text-sm text-zinc-800 placeholder-zinc-400
-                         focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100"
+              className="flex-1 px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg
+                         text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500
+                         focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100 dark:focus:ring-emerald-900/30"
             />
             <button
               onClick={handleSearch}
-              className="px-3 py-2 text-sm text-emerald-600 font-medium hover:text-emerald-700"
+              className="px-3 py-2 text-sm text-emerald-600 dark:text-emerald-400 font-medium hover:text-emerald-700 dark:hover:text-emerald-300"
             >
               Look up
             </button>
           </div>
 
           <div className="text-center py-8">
-            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
-              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
               </svg>
             </div>
-            <h2 className="font-medium text-zinc-900 mb-2">Could not verify</h2>
-            <p className="text-sm text-zinc-500">{error}</p>
+            <h2 className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">Could not verify</h2>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">{error}</p>
           </div>
         </div>
       </div>
@@ -181,14 +181,14 @@ export default function VerifyIdentifierPage() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Handle or DID..."
-            className="flex-1 px-3 py-2 bg-white/50 border border-zinc-200/60 rounded-lg
-                       text-sm text-zinc-800 placeholder-zinc-400
-                       focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100
-                       focus:bg-white/70 transition-all"
+            className="flex-1 px-3 py-2 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-700/60 rounded-lg
+                       text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500
+                       focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100 dark:focus:ring-emerald-900/30
+                       focus:bg-white/70 dark:focus:bg-zinc-900/70 transition-all"
           />
           <button
             onClick={handleSearch}
-            className="px-3 py-2 text-sm text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
+            className="px-3 py-2 text-sm text-emerald-600 dark:text-emerald-400 font-medium hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
           >
             Look up
           </button>
@@ -198,8 +198,8 @@ export default function VerifyIdentifierPage() {
         <div className="space-y-1 mb-6">
           {result.pds && (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-[10px] text-zinc-300 w-8 shrink-0">PDS</span>
-              <span className="font-mono text-xs text-zinc-500">{result.pds}</span>
+              <span className="text-[10px] text-zinc-300 dark:text-zinc-600 w-8 shrink-0">PDS</span>
+              <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">{result.pds}</span>
               <CopyButton
                 value={`https://${result.pds}`}
                 copied={copiedField === 'pds'}
@@ -208,7 +208,7 @@ export default function VerifyIdentifierPage() {
             </div>
           )}
           <div className="flex items-center gap-2 text-sm flex-wrap">
-            <span className="text-[10px] text-zinc-300 w-8 shrink-0">ID</span>
+            <span className="text-[10px] text-zinc-300 dark:text-zinc-600 w-8 shrink-0">ID</span>
             <div className="flex items-center gap-2 min-w-0">
               {result.avatar && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -218,12 +218,12 @@ export default function VerifyIdentifierPage() {
                   className="w-5 h-5 rounded-full object-cover"
                 />
               )}
-              <span className="font-medium text-zinc-800">
+              <span className="font-medium text-zinc-800 dark:text-zinc-200">
                 {result.displayName || result.handle || result.did.slice(0, 20) + '...'}
               </span>
               {result.attestations.some(a => a.verified) && (
                 <>
-                  <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-medium">
+                  <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded text-[10px] font-medium">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
@@ -237,7 +237,7 @@ export default function VerifyIdentifierPage() {
           {result.handle && (
             <div className="flex items-center gap-2 text-sm">
               <span className="text-[10px] text-zinc-300 w-8 shrink-0"></span>
-              <span className="text-zinc-500">@{result.handle}</span>
+              <span className="text-zinc-500 dark:text-zinc-400">@{result.handle}</span>
               <CopyButton
                 value={result.handle}
                 copied={copiedField === 'handle'}
@@ -247,7 +247,7 @@ export default function VerifyIdentifierPage() {
           )}
           <div className="flex items-center gap-2 text-sm">
             <span className="text-[10px] text-zinc-300 w-8 shrink-0"></span>
-            <span className="font-mono text-xs text-zinc-400 break-all">{result.did}</span>
+            <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500 break-all">{result.did}</span>
             <CopyButton
               value={result.did}
               copied={copiedField === 'did'}
@@ -258,18 +258,18 @@ export default function VerifyIdentifierPage() {
 
         {/* Wallets */}
         {result.attestations.length === 0 ? (
-          <div className="text-center py-8 bg-zinc-50 rounded-xl">
-            <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-zinc-100 flex items-center justify-center">
-              <svg className="w-5 h-5 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <div className="text-center py-8 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
+            <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center">
+              <svg className="w-5 h-5 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
               </svg>
             </div>
-            <p className="text-sm text-zinc-500 mb-1">No linked wallets</p>
-            <p className="text-xs text-zinc-400">This user hasn&apos;t linked any wallets yet.</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">No linked wallets</p>
+            <p className="text-xs text-zinc-400 dark:text-zinc-500">This user hasn&apos;t linked any wallets yet.</p>
           </div>
         ) : (
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-zinc-700">
+            <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Linked Wallets ({walletGroups.length})
             </h3>
             
@@ -285,15 +285,15 @@ export default function VerifyIdentifierPage() {
         )}
 
         {/* Verification timestamp */}
-        <p className="text-xs text-zinc-400 mt-6">
+        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-6">
           Verified at {new Date(result.verifiedAt).toLocaleString()}
         </p>
 
         {/* Back link */}
-        <div className="mt-8 pt-6 border-t border-zinc-100">
+        <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800">
           <Link
             href="/verify"
-            className="text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
+            className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
           >
             ← Verify another identity
           </Link>
@@ -327,10 +327,10 @@ function WalletGroupCard({
   return (
     <div className={`rounded-xl border ${
       allValid 
-        ? 'bg-emerald-50/50 border-emerald-200' 
+        ? 'bg-emerald-50/50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50' 
         : hasInvalid
-          ? 'bg-amber-50/50 border-amber-200'
-          : 'bg-zinc-50 border-zinc-200'
+          ? 'bg-amber-50/50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/50'
+          : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700'
     }`}>
       {/* Main card */}
       <div className="p-4">
@@ -347,14 +347,14 @@ function WalletGroupCard({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                 </svg>
               )}
-              <span className={`text-sm font-medium ${allValid ? 'text-emerald-800' : 'text-amber-800'}`}>
+              <span className={`text-sm font-medium ${allValid ? 'text-emerald-800 dark:text-emerald-300' : 'text-amber-800 dark:text-amber-300'}`}>
                 {group.attestations.length} chain{group.attestations.length > 1 ? 's' : ''} linked
               </span>
             </div>
             
             {/* Address */}
             <div className="flex items-center gap-2">
-              <span className="font-mono text-sm text-zinc-700 truncate">
+              <span className="font-mono text-sm text-zinc-700 dark:text-zinc-300 truncate">
                 {group.address}
               </span>
               <CopyButton
@@ -366,7 +366,7 @@ function WalletGroupCard({
                 href={getExplorerUrl(group.attestations[0].chainId, group.address)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1 rounded hover:bg-white/50 transition-colors shrink-0"
+                className="p-1 rounded hover:bg-white/50 dark:hover:bg-zinc-800/50 transition-colors shrink-0"
                 title="View on block explorer"
               >
                 <svg className="w-3.5 h-3.5 text-zinc-400 hover:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -407,7 +407,7 @@ function WalletGroupCard({
           {/* Expand/collapse button */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="shrink-0 p-2 text-zinc-400 hover:text-zinc-600 rounded-lg transition-colors"
+            className="shrink-0 p-2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 rounded-lg transition-colors"
             title={expanded ? 'Collapse' : 'Expand'}
           >
             <svg 
@@ -422,36 +422,36 @@ function WalletGroupCard({
 
       {/* Expanded details */}
       {expanded && (
-        <div className="border-t border-zinc-200/50 px-4 py-3 space-y-2">
+        <div className="border-t border-zinc-200/50 dark:border-zinc-700/50 px-4 py-3 space-y-2">
           {group.attestations.map(attestation => (
             <div 
               key={attestation.rkey}
-              className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/50"
+              className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/50 dark:bg-zinc-800/50"
             >
               <div className="flex items-center gap-3">
                 <span style={{ color: CHAIN_COLORS[attestation.chainId as SupportedChainId] }}>
                   <ChainIcon chainId={attestation.chainId} className="w-4 h-4" />
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-zinc-700">
+                  <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     {getChainName(attestation.chainId)}
                   </p>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
                     {new Date(attestation.createdAt).toLocaleDateString()} · {attestation.signatureType}
                   </p>
                 </div>
                 {attestation.verified ? (
-                  <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-medium">
+                  <span className="px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded text-[10px] font-medium">
                     Valid
                   </span>
                 ) : (
-                  <span className="px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-medium">
+                  <span className="px-1.5 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded text-[10px] font-medium">
                     Invalid
                   </span>
                 )}
               </div>
               {attestation.verificationError && (
-                <span className="text-xs text-red-500">{attestation.verificationError}</span>
+                <span className="text-xs text-red-500 dark:text-red-400">{attestation.verificationError}</span>
               )}
             </div>
           ))}
@@ -473,7 +473,7 @@ function CopyButton({
   return (
     <button
       onClick={onCopy}
-      className="p-1 rounded hover:bg-zinc-100 transition-colors shrink-0"
+      className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
       title={copied ? 'Copied!' : `Copy ${value.slice(0, 20)}...`}
     >
       {copied ? (
@@ -481,7 +481,7 @@ function CopyButton({
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
       ) : (
-        <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <svg className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
         </svg>
       )}
