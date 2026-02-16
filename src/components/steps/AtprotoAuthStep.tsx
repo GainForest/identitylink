@@ -24,10 +24,10 @@ export function AtprotoAuthStep() {
     <div>
       {/* Header */}
       <div className="mb-6">
-        <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900">
+        <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900 dark:text-zinc-100">
           Sign in with ATProto
         </h2>
-        <p className="text-sm text-zinc-400 mt-1">
+        <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-1">
           Connect your ATProto identity to prove who you are
         </p>
       </div>
@@ -35,7 +35,7 @@ export function AtprotoAuthStep() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="handle" className="block text-xs font-medium text-zinc-500 mb-1.5">
+          <label htmlFor="handle" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
             Your Handle
           </label>
           <input
@@ -46,19 +46,19 @@ export function AtprotoAuthStep() {
             placeholder="alice.bsky.social"
             disabled={isLoading}
             autoFocus
-            className="w-full px-4 py-3 text-sm bg-white border border-zinc-200 rounded-lg
-                       placeholder:text-zinc-300
+            className="w-full px-4 py-3 text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg
+                       placeholder:text-zinc-300 dark:placeholder:text-zinc-600 dark:text-zinc-100
                        focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400
                        disabled:opacity-50 disabled:cursor-not-allowed
                        transition-all"
           />
-          <p className="text-xs text-zinc-400 mt-1.5">
+          <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1.5">
             Enter your full handle (e.g. alice.bsky.social or alice.mydomain.com)
           </p>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-100 text-sm text-red-700">
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 text-sm text-red-700 dark:text-red-400">
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
             </svg>
@@ -69,8 +69,8 @@ export function AtprotoAuthStep() {
         <button
           type="submit"
           disabled={isLoading || !handle.trim()}
-          className="w-full py-2.5 px-4 bg-zinc-900 text-white text-sm font-medium rounded-lg
-                     hover:bg-zinc-800 transition-colors
+          className="w-full py-2.5 px-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-sm font-medium rounded-lg
+                     hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
@@ -88,12 +88,12 @@ export function AtprotoAuthStep() {
       </form>
 
       {/* Security note */}
-      <div className="mt-6 pt-6 border-t border-zinc-100">
+      <div className="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-800">
         <div className="flex gap-3 text-xs">
-          <svg className="w-4 h-4 text-zinc-300 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <svg className="w-4 h-4 text-zinc-300 dark:text-zinc-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
-          <p className="text-zinc-400">
+          <p className="text-zinc-400 dark:text-zinc-500">
             You&apos;ll be redirected to your ATProto server to authorize. We never see your password.
           </p>
         </div>

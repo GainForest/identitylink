@@ -29,15 +29,15 @@ export function SigningAnimation({ walletType, message }: SigningAnimationProps)
         )}
         
         {/* Animated ring */}
-        <div className="absolute inset-0 rounded-full border-2 border-blue-400/30 animate-ping" />
+        <div className="absolute inset-0 rounded-full border-2 border-blue-400/30 dark:border-blue-500/20 animate-ping" />
       </div>
 
       {/* Status text */}
-      <h3 className="text-lg font-medium text-zinc-800 mb-2">
+      <h3 className="text-lg font-medium text-zinc-800 dark:text-zinc-200 mb-2">
         {isPasskey ? 'Waiting for Biometric' : 'Waiting for Signature'}
       </h3>
       
-      <p className="text-sm text-zinc-500 max-w-xs">
+      <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-xs">
         {message || (isPasskey 
           ? 'Confirm with Face ID or fingerprint on your device'
           : 'Please approve the signature request in your wallet'
@@ -45,7 +45,7 @@ export function SigningAnimation({ walletType, message }: SigningAnimationProps)
       </p>
 
       {/* Hint */}
-      <p className="text-xs text-zinc-400 mt-4">
+      <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-4">
         {isPasskey 
           ? 'Your biometric data never leaves your device'
           : 'This is a signature, not a transaction'
