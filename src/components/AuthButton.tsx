@@ -74,7 +74,7 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
 
   if (isLoading) {
     return (
-      <div className="w-5 h-5 rounded-full border-2 border-zinc-200 border-t-zinc-400 animate-spin" />
+      <div className="w-5 h-5 rounded-full border-2 border-zinc-200 border-t-zinc-400 dark:border-zinc-700 dark:border-t-zinc-400 animate-spin" />
     )
   }
 
@@ -83,7 +83,7 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
     if (variant === 'mobile') {
       return (
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-500">
+          <div className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-500 dark:text-zinc-400">
             {session.avatar ? (
               <Image
                 src={session.avatar}
@@ -93,7 +93,7 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
                 className="rounded-full"
               />
             ) : (
-              <div className="w-5 h-5 rounded-full bg-zinc-200 flex items-center justify-center text-[10px] text-zinc-500">
+              <div className="w-5 h-5 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] text-zinc-500 dark:text-zinc-400">
                 {(session.displayName || session.handle).charAt(0).toUpperCase()}
               </div>
             )}
@@ -114,13 +114,13 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
                     <ChainIcon chainId={chain.id} className="w-2.5 h-2.5" />
                   </span>
                 )}
-                <span className="font-mono text-xs text-zinc-400">
+                <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">
                   {evmAddress.slice(0, 6)}...{evmAddress.slice(-4)}
                 </span>
               </div>
               <button
                 onClick={handleWalletDisconnect}
-                className="text-xs text-zinc-300 hover:text-red-400 transition-colors"
+                className="text-xs text-zinc-300 dark:text-zinc-600 hover:text-red-400 dark:hover:text-red-400 transition-colors"
               >
                 Disconnect
               </button>
@@ -128,7 +128,7 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
           ) : (
             <button
               onClick={() => setShowWalletModal(true)}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50 rounded transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
@@ -140,18 +140,18 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
           <Link
             href={`/verify/${session.handle}`}
             onClick={onNavigate}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 rounded transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded transition-colors"
           >
-            <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             My Links
           </Link>
           <button
             onClick={() => { onNavigate?.(); handleLogout() }}
-            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 rounded transition-colors cursor-pointer"
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded transition-colors cursor-pointer"
           >
-            <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
             </svg>
             Sign out
@@ -185,28 +185,28 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
               className="rounded-full"
             />
           ) : (
-            <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center text-xs text-zinc-500">
+            <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-xs text-zinc-500 dark:text-zinc-400">
               {(session.displayName || session.handle).charAt(0).toUpperCase()}
             </div>
           )}
-          <span className="text-sm text-zinc-600 max-w-[120px] truncate">
+          <span className="text-sm text-zinc-600 dark:text-zinc-400 max-w-[120px] truncate">
             {session.displayName || session.handle}
           </span>
         </button>
 
         {showDropdown && (
-          <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-zinc-200/60 py-1 z-50">
+          <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-zinc-900 rounded-lg shadow-lg dark:shadow-zinc-900/50 border border-zinc-200/60 dark:border-zinc-700/60 py-1 z-50">
             {/* ATProto identity */}
-            <div className="px-3 py-2 border-b border-zinc-100">
-              <div className="text-[10px] uppercase tracking-wider text-zinc-300 mb-1">ATProto</div>
-              <div className="text-xs text-zinc-400 truncate" title={session.did}>
+            <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800">
+              <div className="text-[10px] uppercase tracking-wider text-zinc-300 dark:text-zinc-600 mb-1">ATProto</div>
+              <div className="text-xs text-zinc-400 dark:text-zinc-500 truncate" title={session.did}>
                 {session.did.slice(0, 24)}...
               </div>
             </div>
             
             {/* EVM Wallet section */}
-            <div className="px-3 py-2 border-b border-zinc-100">
-              <div className="text-[10px] uppercase tracking-wider text-zinc-300 mb-1.5">EVM Wallet</div>
+            <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800">
+              <div className="text-[10px] uppercase tracking-wider text-zinc-300 dark:text-zinc-600 mb-1.5">EVM Wallet</div>
               {evmAddress ? (
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
@@ -221,17 +221,17 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
                       </span>
                     )}
                     <div className="min-w-0">
-                      <div className="font-mono text-xs text-zinc-600 truncate" title={evmAddress}>
+                      <div className="font-mono text-xs text-zinc-600 dark:text-zinc-400 truncate" title={evmAddress}>
                         {evmAddress.slice(0, 6)}...{evmAddress.slice(-4)}
                       </div>
-                      <div className="text-[10px] text-zinc-300 truncate">
+                      <div className="text-[10px] text-zinc-300 dark:text-zinc-600 truncate">
                         {chain ? getChainName(chain.id) : ''}{connector ? ` · ${connector.name}` : ''}
                       </div>
                     </div>
                   </div>
                   <button
                     onClick={handleWalletDisconnect}
-                    className="text-[10px] text-zinc-300 hover:text-red-400 transition-colors shrink-0"
+                    className="text-[10px] text-zinc-300 dark:text-zinc-600 hover:text-red-400 dark:hover:text-red-400 transition-colors shrink-0"
                   >
                     Disconnect
                   </button>
@@ -239,7 +239,7 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
               ) : (
                 <button
                   onClick={() => { setShowDropdown(false); setShowWalletModal(true) }}
-                  className="flex items-center gap-2 w-full py-1.5 px-2 -mx-2 text-xs text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50 rounded transition-colors"
+                  className="flex items-center gap-2 w-full py-1.5 px-2 -mx-2 text-xs text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded transition-colors"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -252,19 +252,19 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
             <Link
               href={`/verify/${session.handle}`}
               onClick={() => setShowDropdown(false)}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
             >
-              <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               My Links
             </Link>
-            <div className="h-px bg-zinc-100 my-1" />
+            <div className="h-px bg-zinc-100 dark:bg-zinc-800 my-1" />
             <button
               onClick={() => { setShowDropdown(false); handleLogout() }}
-              className="flex items-center gap-2 w-full px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors cursor-pointer"
+              className="flex items-center gap-2 w-full px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
             >
-              <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
               </svg>
               Sign out
@@ -288,7 +288,7 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+        className="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors cursor-pointer whitespace-nowrap shrink-0"
       >
         Sign in
       </button>
@@ -303,18 +303,18 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
 
           {/* Modal */}
           <div
-            className="relative w-full max-w-sm mx-4 bg-white rounded-xl shadow-lg border border-zinc-200/60 p-6"
+            className="relative w-full max-w-sm mx-4 bg-white dark:bg-zinc-900 rounded-xl shadow-lg dark:shadow-zinc-900/50 border border-zinc-200/60 dark:border-zinc-700/60 p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="font-[family-name:var(--font-garamond)] text-xl text-zinc-900 mb-1">
+            <h2 className="font-[family-name:var(--font-garamond)] text-xl text-zinc-900 dark:text-zinc-100 mb-1">
               Sign in with ATProto
             </h2>
-            <p className="text-sm text-zinc-400 mb-5">
+            <p className="text-sm text-zinc-400 dark:text-zinc-500 mb-5">
               Enter your handle to connect.
             </p>
 
             <form onSubmit={handleLogin}>
-              <label htmlFor="auth-handle" className="block text-sm text-zinc-600 mb-1.5">
+              <label htmlFor="auth-handle" className="block text-sm text-zinc-600 dark:text-zinc-400 mb-1.5">
                 Handle
               </label>
               <input
@@ -325,17 +325,17 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
                 placeholder="alice.bsky.social"
                 disabled={isSubmitting}
                 autoFocus
-                className="w-full px-3 py-2 text-sm bg-white border border-zinc-200/60 rounded-lg
-                           placeholder:text-zinc-300
+                className="w-full px-3 py-2 text-sm bg-white dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-700 rounded-lg
+                           placeholder:text-zinc-300 dark:placeholder:text-zinc-600 dark:text-zinc-100
                            focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400
                            disabled:opacity-50 disabled:cursor-not-allowed"
               />
-              <p className="text-xs text-zinc-300 mt-1.5">
+              <p className="text-xs text-zinc-300 dark:text-zinc-600 mt-1.5">
                 Just a username? We&apos;ll add .bsky.social for you.
               </p>
 
               {error && (
-                <p className="text-sm text-red-500 mt-2">{error}</p>
+                <p className="text-sm text-red-500 dark:text-red-400 mt-2">{error}</p>
               )}
 
               <div className="flex gap-2 mt-5">
@@ -343,8 +343,8 @@ export function AuthButton({ variant = 'desktop', onNavigate }: AuthButtonProps)
                   type="button"
                   onClick={() => setShowModal(false)}
                   disabled={isSubmitting}
-                  className="flex-1 px-3 py-2 text-sm text-zinc-600 bg-zinc-50 rounded-lg
-                             hover:bg-zinc-100 transition-colors
+                  className="flex-1 px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800 rounded-lg
+                             hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors
                              disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
@@ -432,16 +432,16 @@ function WalletModal({ onClose, onConnect, connectors }: WalletModalProps) {
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-sm mx-4 bg-white rounded-xl shadow-lg border border-zinc-200/60 p-6"
+        className="relative w-full max-w-sm mx-4 bg-white dark:bg-zinc-900 rounded-xl shadow-lg dark:shadow-zinc-900/50 border border-zinc-200/60 dark:border-zinc-700/60 p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-[family-name:var(--font-garamond)] text-xl text-zinc-900">
+          <h2 className="font-[family-name:var(--font-garamond)] text-xl text-zinc-900 dark:text-zinc-100">
             Connect Wallet
           </h2>
           <button
             onClick={onClose}
-            className="p-1 -mr-1 text-zinc-400 hover:text-zinc-600 transition-colors"
+            className="p-1 -mr-1 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -449,7 +449,7 @@ function WalletModal({ onClose, onConnect, connectors }: WalletModalProps) {
           </button>
         </div>
         
-        <p className="text-sm text-zinc-400 mb-5">
+        <p className="text-sm text-zinc-400 dark:text-zinc-500 mb-5">
           Choose a wallet to connect.
         </p>
 
@@ -460,21 +460,21 @@ function WalletModal({ onClose, onConnect, connectors }: WalletModalProps) {
               <button
                 key={connector.id}
                 onClick={() => onConnect(connector.id)}
-                className="flex items-center gap-3 w-full p-3 rounded-lg border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 transition-all"
+                className="flex items-center gap-3 w-full p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
               >
-                <div className="w-10 h-10 rounded-lg bg-zinc-50 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center shrink-0">
                   {info.icon}
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-medium text-zinc-800">{info.name}</div>
-                  <div className="text-xs text-zinc-400">{info.description}</div>
+                  <div className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{info.name}</div>
+                  <div className="text-xs text-zinc-400 dark:text-zinc-500">{info.description}</div>
                 </div>
               </button>
             )
           })}
         </div>
 
-        <p className="text-xs text-zinc-300 text-center mt-4">
+        <p className="text-xs text-zinc-300 dark:text-zinc-600 text-center mt-4">
           Read-only access. We cannot move your funds.
         </p>
       </div>
