@@ -3,6 +3,7 @@ import { Inter, EB_Garamond } from 'next/font/google'
 import Image from 'next/image'
 import { Header } from '@/components/Header'
 import { GeometricBackground } from '@/components/GeometricBackground'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import { AuthProvider } from '@/lib/auth'
 import { WagmiProvider } from '@/providers/WagmiProvider'
 import './globals.css'
@@ -53,13 +54,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${garamond.variable} antialiased bg-white text-zinc-800`}
+        className={`${inter.variable} ${garamond.variable} antialiased bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100`}
       >
-        <WagmiProvider>
-          <AuthProvider>
-            <div className="relative min-h-screen overflow-hidden flex flex-col">
+        <ThemeProvider>
+          <WagmiProvider>
+            <AuthProvider>
+              <div className="relative min-h-screen overflow-hidden flex flex-col">
               {/* Geometric flow background */}
               <div className="hidden lg:block">
                 <GeometricBackground />
@@ -81,7 +83,7 @@ export default function RootLayout({
                     width={12}
                     height={12}
                   />
-                  <span className="text-[11px] text-zinc-300 tracking-wide">
+                  <span className="text-[11px] text-zinc-300 dark:text-zinc-600 tracking-wide">
                     Member of Hypercerts &amp; ATProto ecosystem
                   </span>
                 </div>
@@ -89,6 +91,7 @@ export default function RootLayout({
             </div>
           </AuthProvider>
         </WagmiProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
