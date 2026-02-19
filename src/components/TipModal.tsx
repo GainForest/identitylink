@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useAccount, useBalance, useSendTransaction, useWaitForTransactionReceipt, useSwitchChain, useWriteContract, useConnect } from 'wagmi'
 import { parseEther, parseUnits, formatUnits, type Address, erc20Abi } from 'viem'
 import { mainnet, base, optimism, arbitrum } from 'wagmi/chains'
+import { X, CheckCircle, ExternalLink } from 'lucide-react'
 import { ChainIcon } from './ChainIcons'
 import { CHAIN_NAMES, CHAIN_COLORS, type SupportedChainId } from '@/lib/chains'
 
@@ -216,55 +217,49 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/60 backdrop-blur-sm"
         onClick={handleClose}
       />
       
       {/* Modal */}
-      <div className="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-xl dark:shadow-zinc-900/50 max-w-sm w-full mx-4 overflow-hidden">
+      <div className="relative glass-panel rounded-2xl p-6 border border-border/50 shadow-lg max-w-sm w-full mx-4 animate-scale-in overflow-hidden">
         {/* Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="pb-4 border-b border-border mb-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-lg">&#9749;</span>
-              <h2 className="text-lg font-medium text-zinc-800 dark:text-zinc-200">
+              <h2 className="font-[family-name:var(--font-syne)] text-lg font-semibold text-foreground">
                 Buy {recipientName || 'them'} a coffee
               </h2>
             </div>
             <button
               onClick={handleClose}
-              className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="p-1.5 rounded-lg hover:bg-muted transition-colors"
             >
-              <svg className="w-5 h-5 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="size-4 text-muted-foreground" />
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-6 py-5 space-y-5">
+        <div className="space-y-5">
           {txStatus === 'success' ? (
             // Success state
             <div className="text-center py-6">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                <svg className="w-7 h-7 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                <CheckCircle className="w-7 h-7 text-create-accent" />
               </div>
-              <h3 className="text-lg font-medium text-zinc-800 dark:text-zinc-200 mb-1">Thanks for the coffee!</h3>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">Your tip has been sent successfully.</p>
+              <h3 className="font-[family-name:var(--font-syne)] text-lg font-semibold text-foreground mb-1">Thanks for the coffee!</h3>
+              <p className="font-[family-name:var(--font-outfit)] text-sm text-muted-foreground">Your tip has been sent successfully.</p>
               {txHash && (
                 <a
                   href={`https://basescan.org/tx/${txHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 mt-3 text-xs text-emerald-600 dark:text-emerald-400 hover:underline"
+                  className="inline-flex items-center gap-1 mt-3 text-xs text-create-accent hover:underline font-[family-name:var(--font-outfit)]"
                 >
                   View transaction
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                  </svg>
+                  <ExternalLink className="w-3 h-3" />
                 </a>
               )}
             </div>
@@ -272,7 +267,7 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
             <>
               {/* Amount selection */}
               <div>
-                <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+                <label className="font-[family-name:var(--font-outfit)] text-xs font-medium text-muted-foreground uppercase tracking-wide">
                   Amount
                 </label>
                 <div className="flex gap-2 mt-2">
@@ -281,10 +276,10 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
                       key={amount}
                       onClick={() => setSelectedAmount(amount)}
                       disabled={isPending}
-                      className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                      className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all font-[family-name:var(--font-outfit)] ${
                         selectedAmount === amount
-                          ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 ring-2 ring-emerald-500/20'
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                          ? 'bg-create-accent text-create-accent-foreground ring-2 ring-create-accent/20'
+                          : 'bg-muted text-muted-foreground hover:bg-secondary'
                       } disabled:opacity-50`}
                     >
                       ${amount}
@@ -295,7 +290,7 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
 
               {/* Token selection */}
               <div>
-                <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+                <label className="font-[family-name:var(--font-outfit)] text-xs font-medium text-muted-foreground uppercase tracking-wide">
                   Pay with
                 </label>
                 <div className="flex gap-2 mt-2">
@@ -304,10 +299,10 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
                       key={token}
                       onClick={() => setSelectedToken(token)}
                       disabled={isPending}
-                      className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                      className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all font-[family-name:var(--font-outfit)] ${
                         selectedToken === token
-                          ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                          ? 'bg-foreground text-background'
+                          : 'bg-muted text-muted-foreground hover:bg-secondary'
                       } disabled:opacity-50`}
                     >
                       {token}
@@ -318,7 +313,7 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
 
               {/* Chain selection */}
               <div>
-                <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+                <label className="font-[family-name:var(--font-outfit)] text-xs font-medium text-muted-foreground uppercase tracking-wide">
                   Network
                 </label>
                 <div className="grid grid-cols-4 gap-2 mt-2">
@@ -330,7 +325,7 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
                       className={`flex flex-col items-center gap-1 py-2 rounded-xl text-xs transition-all ${
                         selectedChainId === c.id
                           ? 'ring-2 ring-offset-1'
-                          : 'bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+                          : 'bg-muted hover:bg-secondary'
                       } disabled:opacity-50`}
                       style={{
                         ...(selectedChainId === c.id && {
@@ -342,7 +337,7 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
                       <span style={{ color: CHAIN_COLORS[c.id as SupportedChainId] }}>
                         <ChainIcon chainId={c.id} className="w-5 h-5" />
                       </span>
-                      <span className="text-zinc-600 dark:text-zinc-400 font-medium">
+                      <span className="text-muted-foreground font-medium font-[family-name:var(--font-outfit)]">
                         {CHAIN_NAMES[c.id as SupportedChainId]}
                       </span>
                     </button>
@@ -351,16 +346,16 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
               </div>
 
               {/* Summary */}
-              <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl p-4 space-y-2">
+              <div className="bg-muted rounded-xl p-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-500 dark:text-zinc-400">You&apos;ll send</span>
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="font-[family-name:var(--font-outfit)] text-muted-foreground">You&apos;ll send</span>
+                  <span className="font-[family-name:var(--font-outfit)] font-medium text-foreground">
                     {isPriceLoading ? '...' : `${getDisplayAmount()} ${selectedToken}`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-500 dark:text-zinc-400">Your balance</span>
-                  <span className={`font-medium ${hasEnoughBalance() ? 'text-zinc-800 dark:text-zinc-200' : 'text-red-500 dark:text-red-400'}`}>
+                  <span className="font-[family-name:var(--font-outfit)] text-muted-foreground">Your balance</span>
+                  <span className={`font-[family-name:var(--font-outfit)] font-medium ${hasEnoughBalance() ? 'text-foreground' : 'text-red-500'}`}>
                     {getCurrentBalance()} {selectedToken}
                   </span>
                 </div>
@@ -368,7 +363,7 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
 
               {/* Error message */}
               {errorMessage && (
-                <div className="text-sm text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-lg px-3 py-2">
+                <div className="font-[family-name:var(--font-outfit)] text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">
                   {errorMessage}
                 </div>
               )}
@@ -378,7 +373,7 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
 
         {/* Footer */}
         {txStatus !== 'success' && (
-          <div className="px-6 pb-6">
+          <div className="mt-5">
             {!isConnected ? (
               <button
                 onClick={() => {
@@ -386,8 +381,8 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
                   if (injected) connect({ connector: injected })
                 }}
                 disabled={isConnectPending}
-                className="w-full py-3 rounded-xl font-medium text-sm transition-all
-                           bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]
+                className="w-full py-3 rounded-lg font-[family-name:var(--font-outfit)] font-semibold text-sm transition-all
+                           bg-create-accent text-create-accent-foreground hover:bg-create-accent/90 shadow-sm
                            disabled:opacity-50"
               >
                 {isConnectPending ? 'Connecting...' : 'Connect Wallet'}
@@ -396,12 +391,12 @@ export function TipModal({ isOpen, onClose, recipientName, recipientAddress }: T
               <button
                 onClick={handleSend}
                 disabled={isPending || !hasEnoughBalance() || isPriceLoading}
-                className={`w-full py-3 rounded-xl font-medium text-sm transition-all ${
+                className={`w-full py-3 rounded-lg font-[family-name:var(--font-outfit)] font-semibold text-sm transition-all ${
                   isPending
-                    ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400'
+                    ? 'bg-muted text-muted-foreground'
                     : hasEnoughBalance()
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]'
-                      : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 cursor-not-allowed'
+                      ? 'bg-create-accent text-create-accent-foreground hover:bg-create-accent/90 shadow-sm'
+                      : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
                 {txStatus === 'switching' && 'Switching network...'}
@@ -424,12 +419,12 @@ export function CoffeeButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       title="Buy them a coffee"
-      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/30
-                 border border-amber-200 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/30 
-                 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all group"
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted
+                 border border-border hover:bg-secondary
+                 transition-all group"
     >
       <span className="text-xs">&#9749;</span>
-      <span className="text-[10px] font-medium text-amber-700 dark:text-amber-400 group-hover:text-amber-800 dark:group-hover:text-amber-300">
+      <span className="font-[family-name:var(--font-outfit)] text-[10px] font-medium text-muted-foreground group-hover:text-foreground">
         Tip
       </span>
     </button>
