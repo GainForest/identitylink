@@ -15,11 +15,11 @@ const outfit = Outfit({ variable: '--font-outfit', subsets: ['latin'], weight: [
 export const metadata: Metadata = {
   title: 'Identity Link',
   description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
-  metadataBase: new URL('https://link.piss.beauty'),
+  metadataBase: new URL('https://identitylink.vercel.app'),
   openGraph: {
     title: 'Identity Link',
     description: 'Link your ATProto DID to your Ethereum wallet. Create verifiable connections between your decentralized identity and blockchain address.',
-    url: 'https://link.piss.beauty',
+    url: 'https://identitylink.vercel.app',
     siteName: 'Identity Link',
     images: [
       {
