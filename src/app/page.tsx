@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import { Link2, CheckCircle, ArrowRight, Check } from "lucide-react"
 
 function ErrorBanner() {
   const searchParams = useSearchParams()
@@ -11,8 +12,8 @@ function ErrorBanner() {
   if (!error) return null
   
   return (
-    <div className="mb-6 p-4 bg-red-50 border border-red-100 dark:bg-red-950/30 dark:border-red-900/50 rounded-lg">
-      <p className="text-sm text-red-700 dark:text-red-400">
+    <div className="mb-6 glass-panel rounded-xl p-4 border border-destructive/30 bg-destructive/5">
+      <p className="text-sm font-[family-name:var(--font-outfit)] text-destructive">
         <span className="font-medium">Authentication failed:</span> {error}
       </p>
     </div>
@@ -27,11 +28,11 @@ export default function LandingPage() {
       </Suspense>
       
       {/* Hero */}
-      <div className="max-w-lg">
-        <h1 className="font-[family-name:var(--font-garamond)] text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 leading-tight">
+      <div className="max-w-lg animate-fade-in-up">
+        <h1 className="font-[family-name:var(--font-syne)] text-3xl sm:text-4xl lg:text-5xl text-foreground font-bold tracking-tight leading-tight">
           Bridge Your Identities
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 mt-4 text-base leading-relaxed">
+        <p className="font-[family-name:var(--font-outfit)] text-muted-foreground mt-4 text-base leading-relaxed">
           Link your ATProto DID to your Ethereum wallet with cryptographic proof.
         </p>
       </div>
@@ -41,35 +42,29 @@ export default function LandingPage() {
         <Link
           href="/link"
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 
-                     bg-emerald-600 text-white font-medium rounded-lg
-                     hover:bg-emerald-700 transition-colors"
+            bg-create-accent text-create-accent-foreground font-[family-name:var(--font-outfit)] font-semibold rounded-lg
+            hover:bg-create-accent/90 shadow-md transition-all duration-200"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-          </svg>
+          <Link2 className="size-4" />
           Link Identity
         </Link>
         <Link
           href="/verify"
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 
-                     bg-white text-zinc-700 font-medium rounded-lg border border-zinc-200
-                     hover:bg-zinc-50 hover:border-zinc-300 
-                     dark:bg-zinc-900 dark:text-zinc-300 dark:border-zinc-700 
-                     dark:hover:bg-zinc-800 dark:hover:border-zinc-600 transition-colors"
+            bg-secondary text-secondary-foreground font-[family-name:var(--font-outfit)] font-medium rounded-lg border border-border
+            hover:bg-accent transition-colors"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <CheckCircle className="size-4" />
           Verify
         </Link>
       </div>
 
       {/* How it works */}
       <div className="mt-16">
-        <h2 className="text-sm font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wide mb-6">
+        <h2 className="text-sm font-[family-name:var(--font-syne)] font-semibold text-muted-foreground uppercase tracking-wider mb-6">
           How it works
         </h2>
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 stagger-children">
           <Step number={1} title="Sign in" description="Authenticate with your ATProto handle" />
           <Step number={2} title="Connect" description="Link your Ethereum wallet" />
           <Step number={3} title="Sign" description="Create a cryptographic attestation" />
@@ -79,10 +74,10 @@ export default function LandingPage() {
 
       {/* Features */}
       <div className="mt-16">
-        <h2 className="text-sm font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wide mb-6">
+        <h2 className="text-sm font-[family-name:var(--font-syne)] font-semibold text-muted-foreground uppercase tracking-wider mb-6">
           Features
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 stagger-children">
           <Feature title="Self-sovereign" description="Data stored in your ATProto PDS" />
           <Feature title="Multi-chain" description="Ethereum, Base, Optimism, Arbitrum" />
           <Feature title="Any wallet" description="MetaMask, Coinbase, Safe, and more" />
@@ -96,13 +91,13 @@ export default function LandingPage() {
 function Step({ number, title, description }: { number: number; title: string; description: string }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-medium 
-                      flex items-center justify-center shrink-0 mt-0.5">
+      <div className="size-6 rounded-full bg-create-accent/10 text-create-accent text-xs font-[family-name:var(--font-outfit)] font-medium 
+        flex items-center justify-center shrink-0 mt-0.5">
         {number}
       </div>
       <div>
-        <h3 className="font-medium text-zinc-800 dark:text-zinc-200">{title}</h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
+        <h3 className="font-[family-name:var(--font-outfit)] font-medium text-foreground">{title}</h3>
+        <p className="text-sm font-[family-name:var(--font-outfit)] text-muted-foreground">{description}</p>
       </div>
     </div>
   )
@@ -111,12 +106,10 @@ function Step({ number, title, description }: { number: number; title: string; d
 function Feature({ title, description }: { title: string; description: string }) {
   return (
     <div className="flex items-start gap-3">
-      <svg className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-      </svg>
+      <Check className="size-4 text-create-accent mt-0.5 shrink-0" />
       <div>
-        <span className="text-sm text-zinc-700 dark:text-zinc-300">{title}</span>
-        <span className="text-sm text-zinc-400 dark:text-zinc-500"> — {description}</span>
+        <span className="text-sm font-[family-name:var(--font-outfit)] text-foreground">{title}</span>
+        <span className="text-sm font-[family-name:var(--font-outfit)] text-muted-foreground"> — {description}</span>
       </div>
     </div>
   )
