@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth'
 import { getChainName, getExplorerUrl, SUPPORTED_CHAIN_IDS, CHAIN_COLORS, sortByChainId, type SupportedChainId } from '@/lib/chains'
 import { ChainIcon } from '@/components/ChainIcons'
 import type { SignatureType } from '@/lib/attestation'
+import { Wallet, AlertCircle, CheckCircle, ExternalLink, Trash2, Copy, Check, ChevronDown, Plus, Loader2 } from 'lucide-react'
 
 interface VerifiedAttestation {
   address: string
@@ -127,8 +128,8 @@ export default function ManagePage() {
   if (authLoading) {
     return (
       <div className="pt-16 sm:pt-24 pb-16 flex flex-col items-center">
-        <div className="w-12 h-12 rounded-full border-3 border-emerald-200 border-t-emerald-600 dark:border-emerald-900 dark:border-t-emerald-400 animate-spin" />
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-4">Loading...</p>
+        <Loader2 className="size-12 text-create-accent/20 border-t-create-accent animate-spin" />
+        <p className="font-[family-name:var(--font-outfit)] text-sm text-muted-foreground mt-4">Loading...</p>
       </div>
     )
   }
@@ -136,38 +137,34 @@ export default function ManagePage() {
   if (!session) {
     return (
       <div className="pt-16 sm:pt-24 pb-16 flex flex-col items-center">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center">
-            <svg className="w-8 h-8 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-          </div>
-          <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100 mb-2">
+        <div className="glass-panel rounded-xl border border-border/50 p-8 text-center max-w-sm w-full">
+          <Wallet className="size-12 text-muted-foreground/30 mx-auto mb-3" />
+          <h1 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl text-foreground font-bold tracking-tight mb-2">
             Sign In Required
           </h1>
-          <p className="text-zinc-500 dark:text-zinc-400 max-w-sm">
+          <p className="font-[family-name:var(--font-outfit)] text-muted-foreground max-w-sm mb-6">
             Sign in with your ATProto account to manage your linked wallets.
           </p>
+          <Link
+            href="/link"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-create-accent text-create-accent-foreground font-medium rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Sign In
+          </Link>
         </div>
-        <Link
-          href="/link"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
-        >
-          Sign In
-        </Link>
       </div>
     )
   }
 
   return (
-    <div className="pt-8 sm:pt-12 pb-16 flex flex-col items-center">
+    <div className="pt-8 sm:pt-12 pb-16 flex flex-col items-center animate-fade-in-up">
       <div className="w-full max-w-lg">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100">
+          <h1 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl text-foreground font-bold tracking-tight">
             Manage Wallets
           </h1>
-          <p className="text-zinc-500 dark:text-zinc-400 mt-2">
+          <p className="font-[family-name:var(--font-outfit)] text-muted-foreground mt-2">
             View and manage your linked wallets
           </p>
         </div>
@@ -175,25 +172,21 @@ export default function ManagePage() {
         {/* Identity header */}
         <div className="space-y-1 mb-6">
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-[10px] text-zinc-300 dark:text-zinc-600 w-8 shrink-0">ID</span>
+            <span className="font-[family-name:var(--font-outfit)] text-[10px] text-muted-foreground/40 w-8 shrink-0">ID</span>
             <div className="flex items-center gap-2 min-w-0">
-              <span className="font-medium text-zinc-800 dark:text-zinc-200">
+              <span className="font-medium text-foreground">
                 @{session.handle || session.did.slice(0, 20) + '...'}
               </span>
               {totalCount > 0 && (
                 <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${
                   verifiedCount === totalCount 
-                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' 
-                    : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                    ? 'bg-create-accent/10 text-create-accent' 
+                    : 'bg-amber-100 text-amber-700'
                 }`}>
                   {verifiedCount === totalCount ? (
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <CheckCircle className="size-3" />
                   ) : (
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                    </svg>
+                    <AlertCircle className="size-3" />
                   )}
                   {verifiedCount}/{totalCount} verified
                 </span>
@@ -201,8 +194,8 @@ export default function ManagePage() {
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-[10px] text-zinc-300 dark:text-zinc-600 w-8 shrink-0"></span>
-            <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500 break-all">{session.did}</span>
+            <span className="font-[family-name:var(--font-outfit)] text-[10px] text-muted-foreground/40 w-8 shrink-0"></span>
+            <span className="font-mono text-xs text-muted-foreground break-all">{session.did}</span>
             <CopyButton
               value={session.did}
               copied={copiedField === 'did'}
@@ -212,12 +205,10 @@ export default function ManagePage() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 dark:bg-red-950/30 dark:border-red-900/50 rounded-xl">
+          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-xl">
             <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-              </svg>
-              <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+              <AlertCircle className="size-4 text-destructive shrink-0" />
+              <p className="font-[family-name:var(--font-outfit)] text-sm text-destructive">{error}</p>
             </div>
           </div>
         )}
@@ -225,34 +216,28 @@ export default function ManagePage() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2].map(i => (
-              <div key={i} className="animate-pulse p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
-                <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-48 mb-2" />
-                <div className="h-3 bg-zinc-100 dark:bg-zinc-600 rounded w-32" />
+              <div key={i} className="animate-pulse p-4 bg-muted rounded-xl">
+                <div className="h-4 bg-secondary rounded w-48 mb-2" />
+                <div className="h-3 bg-muted rounded w-32" />
               </div>
             ))}
           </div>
         ) : attestations.length === 0 ? (
-          <div className="text-center py-8 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
-            <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center">
-              <svg className="w-5 h-5 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-              </svg>
-            </div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">No linked wallets</p>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 mb-4">Link a wallet to create a verifiable identity attestation.</p>
+          <div className="glass-panel rounded-xl p-8 border border-border/50 text-center">
+            <Wallet className="size-12 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="font-[family-name:var(--font-outfit)] text-sm text-muted-foreground mb-1">No linked wallets yet</p>
+            <p className="font-[family-name:var(--font-outfit)] text-xs text-muted-foreground/60 mb-4">Link a wallet to create a verifiable identity attestation.</p>
             <Link
               href="/link"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-create-accent text-create-accent-foreground text-sm font-medium rounded-lg hover:opacity-90 transition-opacity"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
+              <Plus className="size-4" />
               Link a Wallet
             </Link>
           </div>
         ) : (
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <div className="space-y-3 stagger-children">
+            <h3 className="font-[family-name:var(--font-syne)] font-semibold text-sm uppercase tracking-wider text-muted-foreground">
               Linked Wallets ({walletGroups.length})
             </h3>
             
@@ -270,19 +255,17 @@ export default function ManagePage() {
         )}
 
         {/* Footer actions */}
-        <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+        <div className="mt-8 pt-6 border-t border-border flex items-center justify-between">
           <Link
             href="/link"
-            className="inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-create-accent hover:opacity-80 transition-opacity font-[family-name:var(--font-outfit)]"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
+            <Plus className="size-4" />
             Link another wallet
           </Link>
           <Link
             href={`/verify/${session.handle || session.did}`}
-            className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors"
+            className="font-[family-name:var(--font-outfit)] text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             View public profile →
           </Link>
@@ -311,11 +294,7 @@ function WalletGroupCard({
   const unlinkedChains = SUPPORTED_CHAIN_IDS.filter(id => !group.linkedChainIds.includes(id))
 
   return (
-    <div className={`rounded-xl border ${
-      allValid 
-        ? 'bg-emerald-50/50 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800/50' 
-        : 'bg-amber-50/50 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800/50'
-    }`}>
+    <div className="glass-panel rounded-xl border border-border/50 hover:border-create-accent/40 transition-all duration-300">
       {/* Main card */}
       <div className="p-4">
         <div className="flex items-start justify-between gap-3">
@@ -323,22 +302,18 @@ function WalletGroupCard({
             {/* Status */}
             <div className="flex items-center gap-2 mb-1">
               {allValid ? (
-                <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <CheckCircle className="size-4 text-create-accent shrink-0" />
               ) : (
-                <svg className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                </svg>
+                <AlertCircle className="size-4 text-amber-500 shrink-0" />
               )}
-              <span className={`text-sm font-medium ${allValid ? 'text-emerald-800 dark:text-emerald-300' : 'text-amber-800 dark:text-amber-300'}`}>
+              <span className={`font-[family-name:var(--font-outfit)] text-sm font-medium ${allValid ? 'text-create-accent' : 'text-amber-600'}`}>
                 {group.attestations.length} chain{group.attestations.length > 1 ? 's' : ''} linked
               </span>
             </div>
             
             {/* Address */}
             <div className="flex items-center gap-2">
-              <span className="font-mono text-sm text-zinc-700 dark:text-zinc-300 truncate">
+              <span className="font-mono text-sm text-foreground truncate">
                 {group.address}
               </span>
               <CopyButton
@@ -350,12 +325,10 @@ function WalletGroupCard({
                 href={getExplorerUrl(group.attestations[0].chainId, group.address)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1 rounded hover:bg-white/50 dark:hover:bg-zinc-800/50 transition-colors shrink-0"
+                className="p-1 rounded hover:bg-secondary transition-colors shrink-0"
                 title="View on block explorer"
               >
-                <svg className="w-3.5 h-3.5 text-zinc-400 hover:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
+                <ExternalLink className="size-3.5 text-muted-foreground hover:text-foreground" />
               </a>
             </div>
             
@@ -375,13 +348,9 @@ function WalletGroupCard({
                 >
                   <ChainIcon chainId={attestation.chainId} className="w-3 h-3" />
                   {attestation.verified ? (
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg>
+                    <Check className="size-3" />
                   ) : (
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                    </svg>
+                    <AlertCircle className="size-3" />
                   )}
                   {getChainName(attestation.chainId)}
                 </button>
@@ -393,13 +362,11 @@ function WalletGroupCard({
                   key={chainId}
                   href="/link"
                   className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[11px] font-medium 
-                           bg-zinc-100 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700 dark:hover:text-zinc-300 transition-colors"
+                           bg-secondary text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                   title={`Add ${getChainName(chainId)}`}
                 >
                   <ChainIcon chainId={chainId} className="w-3 h-3" />
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>
+                  <Plus className="size-3" />
                   {getChainName(chainId)}
                 </Link>
               ))}
@@ -409,58 +376,48 @@ function WalletGroupCard({
           {/* Expand/collapse button */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="shrink-0 p-2 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 rounded-lg transition-colors"
+            className="shrink-0 p-2 text-muted-foreground hover:text-foreground rounded-lg transition-colors"
             title={expanded ? 'Collapse' : 'Expand'}
           >
-            <svg 
-              className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} 
-              fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
+            <ChevronDown className={`size-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
           </button>
         </div>
       </div>
 
       {/* Expanded details */}
       {expanded && (
-        <div className="border-t border-zinc-200/50 dark:border-zinc-700/50 px-4 py-3 space-y-2">
+        <div className="border-t border-border/50 px-4 py-3 space-y-2">
           {group.attestations.map(attestation => (
             <div 
               key={attestation.rkey}
-              className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/50 dark:bg-zinc-800/50"
+              className="flex items-center justify-between py-2 px-3 rounded-lg bg-secondary/50"
             >
               <div className="flex items-center gap-3">
                 <span style={{ color: CHAIN_COLORS[attestation.chainId as SupportedChainId] }}>
                   <ChainIcon chainId={attestation.chainId} className="w-4 h-4" />
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  <p className="font-[family-name:var(--font-outfit)] text-sm font-medium text-foreground">
                     {getChainName(attestation.chainId)}
                   </p>
-                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                  <p className="font-[family-name:var(--font-outfit)] text-xs text-muted-foreground">
                     {new Date(attestation.createdAt).toLocaleDateString()} · {attestation.signatureType}
                   </p>
                 </div>
                 {!attestation.verified && attestation.verificationError && (
-                  <span className="text-xs text-red-500 dark:text-red-400">{attestation.verificationError}</span>
+                  <span className="font-[family-name:var(--font-outfit)] text-xs text-destructive">{attestation.verificationError}</span>
                 )}
               </div>
               <button
                 onClick={() => onUnlink(attestation.rkey)}
                 disabled={deletingKey === attestation.rkey}
-                className="p-1.5 text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:text-zinc-500 dark:hover:text-red-400 dark:hover:bg-red-950/30 rounded transition-colors disabled:opacity-50"
+                className="text-destructive hover:bg-destructive/10 rounded-lg p-2 transition-colors disabled:opacity-50"
                 title="Unlink from this chain"
               >
                 {deletingKey === attestation.rkey ? (
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
+                  <Loader2 className="size-4 animate-spin" />
                 ) : (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <Trash2 className="size-4" />
                 )}
               </button>
             </div>
@@ -483,17 +440,13 @@ function CopyButton({
   return (
     <button
       onClick={onCopy}
-      className="p-1 rounded hover:bg-white/50 dark:hover:bg-zinc-800/50 transition-colors shrink-0"
+      className="p-1 rounded hover:bg-secondary transition-colors shrink-0"
       title={copied ? 'Copied!' : `Copy ${value.slice(0, 20)}...`}
     >
       {copied ? (
-        <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-        </svg>
+        <Check className="size-3.5 text-create-accent" />
       ) : (
-        <svg className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-        </svg>
+        <Copy className="size-3.5 text-muted-foreground" />
       )}
     </button>
   )
