@@ -23,9 +23,9 @@ export const metadata: Metadata = {
     siteName: 'Identity Link',
     images: [
       {
-        url: '/og-image.jpg',
-        width: 2800,
-        height: 1800,
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
         alt: 'Identity Link — Bridge ATProto and Ethereum identities',
       },
     ],
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Identity Link',
     description: 'Link your ATProto DID to your Ethereum wallet.',
-    images: ['/og-image.jpg'],
+    images: ['/og-image.png'],
     creator: '@gainforest',
   },
 }
