@@ -1,23 +1,16 @@
 import type { Metadata } from 'next'
-import { Inter, EB_Garamond } from 'next/font/google'
+import { Geist, Geist_Mono, Syne, Outfit } from 'next/font/google'
 import Image from 'next/image'
 import { Header } from '@/components/Header'
-import { GeometricBackground } from '@/components/GeometricBackground'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { AuthProvider } from '@/lib/auth'
 import { WagmiProvider } from '@/providers/WagmiProvider'
 import './globals.css'
 
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-})
-
-const garamond = EB_Garamond({
-  variable: '--font-garamond',
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-})
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
+const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
+const syne = Syne({ variable: '--font-syne', subsets: ['latin'], weight: ['400', '500', '600', '700', '800'] })
+const outfit = Outfit({ variable: '--font-outfit', subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
 export const metadata: Metadata = {
   title: 'Identity Link',
@@ -56,41 +49,30 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${garamond.variable} antialiased bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100`}
+        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} ${outfit.variable} antialiased`}
       >
         <ThemeProvider>
           <WagmiProvider>
             <AuthProvider>
-              <div className="relative min-h-screen overflow-hidden flex flex-col">
-              {/* Geometric flow background */}
-              <div className="hidden lg:block">
-                <GeometricBackground />
-              </div>
-
-              <Header />
-
-              {/* Body */}
-              <main className="relative flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pb-8">
-                {children}
-              </main>
-
-              {/* Footer */}
-              <footer className="relative py-6 mt-auto">
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 flex items-center justify-center gap-2">
-                  <Image
-                    src="/hypercerts_logo.png"
-                    alt="Hypercerts"
-                    width={12}
-                    height={12}
-                  />
-                  <span className="text-[11px] text-zinc-300 dark:text-zinc-600 tracking-wide">
-                    Member of Hypercerts &amp; ATProto ecosystem
-                  </span>
+              <div className="relative min-h-screen noise-bg flex flex-col">
+                <div className="gradient-mesh absolute inset-0 -z-10" />
+                <div className="relative z-10 flex-1 flex flex-col">
+                  <Header />
+                  <main className="relative flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 pb-8">
+                    {children}
+                  </main>
+                  <footer className="relative py-6 mt-auto">
+                    <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-center gap-2">
+                      <Image src="/hypercerts_logo.png" alt="Hypercerts" width={12} height={12} />
+                      <span className="text-[11px] font-[family-name:var(--font-outfit)] text-muted-foreground tracking-wide">
+                        Member of Hypercerts &amp; ATProto ecosystem
+                      </span>
+                    </div>
+                  </footer>
                 </div>
-              </footer>
-            </div>
-          </AuthProvider>
-        </WagmiProvider>
+              </div>
+            </AuthProvider>
+          </WagmiProvider>
         </ThemeProvider>
       </body>
     </html>
