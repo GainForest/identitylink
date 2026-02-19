@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/lib/auth'
+import { AlertCircle, ShieldCheck, Loader2 } from 'lucide-react'
 
 export function AtprotoAuthStep() {
   const { login, isLoading } = useAuth()
@@ -21,13 +22,13 @@ export function AtprotoAuthStep() {
   }
 
   return (
-    <div>
+    <div className="animate-fade-in-up">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="font-[family-name:var(--font-garamond)] text-2xl text-zinc-900 dark:text-zinc-100">
+        <h2 className="font-[family-name:var(--font-syne)] text-2xl text-foreground font-bold">
           Sign in with ATProto
         </h2>
-        <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-1">
+        <p className="text-sm font-[family-name:var(--font-outfit)] text-muted-foreground mt-1">
           Connect your ATProto identity to prove who you are
         </p>
       </div>
@@ -35,7 +36,7 @@ export function AtprotoAuthStep() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="handle" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+          <label htmlFor="handle" className="block text-xs font-[family-name:var(--font-outfit)] font-medium text-muted-foreground mb-1.5">
             Your Handle
           </label>
           <input
@@ -46,39 +47,35 @@ export function AtprotoAuthStep() {
             placeholder="alice.bsky.social"
             disabled={isLoading}
             autoFocus
-            className="w-full px-4 py-3 text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg
-                       placeholder:text-zinc-300 dark:placeholder:text-zinc-600 dark:text-zinc-100
-                       focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400
+            className="w-full px-4 py-3 text-sm bg-background border border-input rounded-lg
+                       placeholder:text-muted-foreground/50 text-foreground
+                       focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring
                        disabled:opacity-50 disabled:cursor-not-allowed
+                       font-[family-name:var(--font-outfit)]
                        transition-all"
           />
-          <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1.5">
+          <p className="text-xs font-[family-name:var(--font-outfit)] text-muted-foreground mt-1.5">
             Enter your full handle (e.g. alice.bsky.social or alice.mydomain.com)
           </p>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 text-sm text-red-700 dark:text-red-400">
-            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
-            {error}
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/30 text-sm text-destructive">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span className="font-[family-name:var(--font-outfit)]">{error}</span>
           </div>
         )}
 
         <button
           type="submit"
           disabled={isLoading || !handle.trim()}
-          className="w-full py-2.5 px-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-sm font-medium rounded-lg
-                     hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors
+          className="w-full py-2.5 px-4 bg-create-accent text-create-accent-foreground text-sm font-[family-name:var(--font-outfit)] font-semibold rounded-lg shadow-sm
+                     hover:bg-create-accent/90 transition-colors
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
-              <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
+              <Loader2 className="w-4 h-4 animate-spin" />
               Connecting...
             </span>
           ) : (
@@ -88,12 +85,10 @@ export function AtprotoAuthStep() {
       </form>
 
       {/* Security note */}
-      <div className="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-800">
+      <div className="mt-6 pt-6 border-t border-border/50">
         <div className="flex gap-3 text-xs">
-          <svg className="w-4 h-4 text-zinc-300 dark:text-zinc-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-          </svg>
-          <p className="text-zinc-400 dark:text-zinc-500">
+          <ShieldCheck className="w-4 h-4 text-muted-foreground/50 shrink-0 mt-0.5" />
+          <p className="font-[family-name:var(--font-outfit)] text-muted-foreground">
             You&apos;ll be redirected to your ATProto server to authorize. We never see your password.
           </p>
         </div>
