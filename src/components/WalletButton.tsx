@@ -1,6 +1,7 @@
 'use client'
 
 import { useConnect } from 'wagmi'
+import { Wallet } from 'lucide-react'
 
 interface WalletButtonProps {
   connectorId: string
@@ -38,29 +39,27 @@ export function WalletButton({
       onClick={handleClick}
       disabled={isConnecting}
       className={`
-        relative flex flex-col items-center justify-center p-4 rounded-xl border-2 
-        transition-all duration-200 cursor-pointer
-        ${recommended 
-          ? 'border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-950/30 hover:border-blue-400 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30' 
-          : 'border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800'
-        }
+        relative flex flex-col items-center justify-center
+        glass-panel rounded-xl border border-border/50 p-4
+        hover:border-create-accent/40 hover:shadow-md
+        transition-all duration-300 cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed
       `}
     >
       {recommended && (
-        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-[family-name:var(--font-outfit)] font-medium bg-create-accent/10 text-create-accent rounded-full">
           Recommended
         </span>
       )}
       
-      <div className="w-10 h-10 mb-2 flex items-center justify-center">
+      <div className="size-10 rounded-xl bg-secondary flex items-center justify-center mb-2">
         {icon}
       </div>
       
-      <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{name}</span>
+      <span className="text-sm font-[family-name:var(--font-outfit)] font-medium text-foreground">{name}</span>
       
       {description && (
-        <span className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">{description}</span>
+        <span className="font-[family-name:var(--font-outfit)] text-xs text-muted-foreground mt-0.5">{description}</span>
       )}
     </button>
   )
@@ -150,10 +149,8 @@ export function RabbyIcon({ className = 'w-10 h-10' }: { className?: string }) {
 
 export function InjectedIcon({ className = 'w-10 h-10' }: { className?: string }) {
   return (
-    <div className={`${className} rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center`}>
-      <svg className="w-6 h-6 text-zinc-500 dark:text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-      </svg>
+    <div className={`${className} rounded-lg bg-secondary flex items-center justify-center`}>
+      <Wallet className="w-6 h-6 text-muted-foreground" />
     </div>
   )
 }
