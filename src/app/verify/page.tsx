@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { Search, ArrowRight, Loader2 } from 'lucide-react'
 
 // Check if string is a DID
 function isDid(value: string): boolean {
@@ -51,65 +52,64 @@ export default function VerifyPage() {
   }
 
   return (
-    <div className="pt-16 sm:pt-24 pb-16 flex flex-col items-center">
+    <div className="pt-16 sm:pt-24 pb-16 flex flex-col items-center animate-fade-in-up">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="font-[family-name:var(--font-garamond)] text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100">
+        <h1 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl text-foreground font-bold tracking-tight">
           Verify Identity
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 mt-2">
+        <p className="font-[family-name:var(--font-outfit)] text-muted-foreground mt-2">
           Check if an ATProto user has linked their wallet
         </p>
       </div>
 
       {/* Search */}
       <div className="w-full max-w-md">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Handle or DID"
-            className="flex-1 px-4 py-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg
-                       text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500
-                       focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30
-                       transition-all"
-          />
-          <button
-            onClick={handleLookup}
-            disabled={isResolving || !input.trim()}
-            className="px-5 py-3 bg-emerald-600 text-white font-medium rounded-lg
-                       hover:bg-emerald-700 transition-colors
-                       disabled:bg-zinc-200 dark:disabled:bg-zinc-700 disabled:text-zinc-400 dark:disabled:text-zinc-500 disabled:cursor-not-allowed"
-          >
-            {isResolving ? (
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-              </svg>
-            )}
-          </button>
-        </div>
+        <div className="glass-panel rounded-2xl p-6 border border-border/50">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Handle or DID"
+              className="flex-1 px-4 py-3 bg-background border border-input rounded-lg
+                         text-foreground placeholder:text-muted-foreground/50
+                         focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring
+                         font-[family-name:var(--font-outfit)] transition-all text-sm"
+            />
+            <button
+              onClick={handleLookup}
+              disabled={isResolving || !input.trim()}
+              className="px-5 py-3 bg-create-accent text-create-accent-foreground font-semibold rounded-lg
+                         hover:bg-create-accent/90 transition-colors shadow-sm
+                         disabled:opacity-50 disabled:cursor-not-allowed
+                         font-[family-name:var(--font-outfit)]"
+            >
+              {isResolving ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Search className="w-5 h-5" />
+              )}
+            </button>
+          </div>
 
-        {error && (
-          <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-center">{error}</p>
-        )}
+          {error && (
+            <p className="font-[family-name:var(--font-outfit)] text-sm text-destructive mt-3 text-center">{error}</p>
+          )}
+        </div>
       </div>
 
       {/* Examples */}
       <div className="mt-8 flex flex-wrap justify-center gap-2">
-        <span className="text-xs text-zinc-400 dark:text-zinc-500">Try:</span>
+        <span className="text-xs text-muted-foreground font-[family-name:var(--font-outfit)]">Try:</span>
         {['pfrazee.com', 'jay.bsky.team', 'emily.bsky.team'].map((handle) => (
           <button
             key={handle}
             onClick={() => setInput(handle)}
-            className="px-2.5 py-1 text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 rounded-full
-                       hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+            className="px-2.5 py-1 text-xs text-muted-foreground bg-secondary rounded-full
+                       hover:bg-secondary/80 hover:text-foreground transition-colors
+                       font-[family-name:var(--font-outfit)]"
           >
             @{handle}
           </button>
@@ -118,7 +118,7 @@ export default function VerifyPage() {
 
       {/* Info */}
       <div className="mt-12 max-w-sm text-center">
-        <p className="text-sm text-zinc-400 dark:text-zinc-500">
+        <p className="font-[family-name:var(--font-outfit)] text-sm text-muted-foreground">
           Verification checks that the wallet signature is cryptographically valid 
           and stored in the user&apos;s ATProto repository.
         </p>
